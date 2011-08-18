@@ -141,13 +141,13 @@ foreach($applicants as $applicant) {
 		<td><?php
 			if ($applicant['essay_file_name']) {
 				$file = '';
-				echo "<a href='?FileName=" . $applicant['essay_file_name'] . "&FileType=essay' target='_blank'>Essay</a>";
+				echo "<a href='getFile.php?FileName=" . $applicant['essay_file_name'] . "&FileType=essay' target='_blank'>Essay</a>";
 			}
 		?>		
 		</td>
 		<td><?php
 			if($applicant['resume_file_name']) {
-				echo "<a href='" . $applicant['resume_file_name'] . "&FileType=resume' target='_blank'>Resume</a>";
+				echo "<a href='getFile.php" . $applicant['resume_file_name'] . "&FileType=resume' target='_blank'>Resume</a>";
 			}
 		?>		
 		</td>
