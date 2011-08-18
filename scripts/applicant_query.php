@@ -140,15 +140,22 @@ foreach($applicants as $applicant) {
 		?></td>
 		<td><?php
 			if ($applicant['essay_file_name']) {
-				$file = '';
-				echo "<a href='getFile.php?FileName=" . $applicant['essay_file_name'] . "&FileType=essay' target='_blank'>Essay</a>";
+				$exDOB = explode("/", $applicant['date_of_birth']);
+				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
+				$ext = end(explode(".", $applicant['essay_file_name']);
+				$filename = "essay_".$applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".".$ext;
+				echo "<a href='getFile.php?FileName=$filename&FileType=essay' target='_blank'>Essay</a>";
 			}
 		?>		
 		</td>
 		<td><?php
 			if($applicant['resume_file_name']) {
-				echo "<a href='getFile.php?FileName=" . $applicant['resume_file_name'] . "&FileType=resume' target='_blank'>Resume</a>";
-			}
+				$exDOB = explode("/", $applicant['date_of_birth']);
+				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
+				$ext = end(explode(".", $applicant['resume_file_name']);
+				$filename = "resume_".$applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".".$ext;
+				echo "<a href='getFile.php?FileName=$filename&FileType=resume' target='_blank'>Resume</a>";
+							}
 		?>		
 		</td>
 
