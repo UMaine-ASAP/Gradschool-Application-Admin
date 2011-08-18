@@ -147,7 +147,7 @@ foreach($applicants as $applicant) {
 		</td>
 		<td><?php
 			if($applicant['resume_file_name']) {
-				echo "<a href='getFile.php" . $applicant['resume_file_name'] . "&FileType=resume' target='_blank'>Resume</a>";
+				echo "<a href='getFile.php?FileName=" . $applicant['resume_file_name'] . "&FileType=resume' target='_blank'>Resume</a>";
 			}
 		?>		
 		</td>
