@@ -1,0 +1,367 @@
+<?php
+include_once 'variables.php';
+include_once 'database.php';
+
+/* =================================== */
+// User management
+/* =================================== */
+function isAssoc($arr)
+{
+    return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+function set_ses_vars($ID) {
+	$_SESSION['userid'] = $ID;
+	$_SESSION['lastAccess'] = time();
+}
+
+function check_ses_vars() {
+	session_start();
+	
+	if(isset($_SESSION['userid']) && isset($_SESSION['lastAccess'])) {
+		$latestAccess = time();
+		if($latestAccess - $_SESSION['lastAccess'] > $GLOBALS["session_timeout"]) {
+			user_logout();
+			return '';
+		}
+		$_SESSION['lastAccess'] = $latestAccess;
+		return $_SESSION['userid'];
+	}
+	return '';
+}
+
+/**
+* Login
+**/
+function user_login($id) {
+	session_start();
+	set_ses_vars($id);
+}
+
+function user_logout() {
+	session_start();
+	session_unset();
+	unset($_SESSION['userid']);
+	unset($_SESSION['lastAccess']);
+}
+
+
+function verifyUser() {
+	if(check_ses_vars() == '') {
+		header('Location:' . $GLOBALS['home_page'] . '/login.php');
+	}
+}
+
+function getUserName($id) {
+	$db = Database::get();
+	$applicants = $db->query("SELECT * FROM admin WHERE id = " . $id);
+	return $applicants[0]['username'];
+}
+
+/* =================================== */
+// Data filters
+/* =================================== */
+function check_in_range($start_date, $end_date, $date_from_user)
+{
+  // Convert to timestamp
+  $start_ts = strtotime($start_date);
+  $end_ts = strtotime($end_date);
+  $user_ts = strtotime($date_from_user);
+
+  // Check that user date is between start & end
+  return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
+}
+
+function filter_set(&$src, $type, $fields) {
+	$result = false;
+	foreach($fields as $field) {
+		$result = $result || filter($src, $type, $field);
+	}
+	return $result;
+}
+
+
+function filter(&$src, $type, $field) {
+	if($_POST[$field] == '-') return false;
+	
+	switch($type) {
+	case 'direct':
+		if($_POST[$field] == '' ) $_POST[$field] = 'blank';
+	
+		$isblank = false;
+
+		//check if field is blank
+		if($_POST[$field] == 'blank') {
+			if(isset($src[$field]) && $src[$field] != '') {
+				$isblank = true;
+			} else {
+				$_POST[$field] = '';		
+			}
+		}	
+	
+		return isset($_POST[$field]) && $_POST[$field] != '' && $src[$field] != $_POST[$field] || $isblank;
+		break;
+	case 'contained':
+		return $_POST[$field] != '' && preg_match('/'.$_POST[$field].'/i', $src[$field]) === 0;
+		break;
+
+	}
+}
+
+
+function sort_array(&$array_to_sort, $sort_by, $sort_type) {
+
+	if( $sort_by != '' && $sort_type != '' ) {
+		//construct specific comparison function
+		$cmp = $sort_type == 'ASCD' ? '<' : '>';
+		$v1 = 'strtolower($a["' . $sort_by . '"])';
+		$v2 = 'strtolower($b["' . $sort_by . '"])';
+		$func_str = "return strcmp( $v1, $v2 ) $cmp 0 ;";
+
+		//sort using function
+		$compare_func = create_function('$a,$b', $func_str);
+		usort($array_to_sort, $compare_func);	
+	}
+}
+
+function sort_array_by_date(&$array_to_sort, $date_field, $order) {
+	if( $date_field == '' || $order == '' ) return;
+
+	//construct specific comparison function
+	$cmp = $order == 'ASCD' ? '<' : '>';
+	$v1 = 'strtotime($a["' . $date_field . '"])';
+	$v2 = 'strtotime($b["' . $date_field . '"])';
+	$func_str = "return strcmp( $v1, $v2 ) $cmp 0 ;";
+
+	//sort using function
+	$compare_func = create_function('$a,$b', $func_str);
+	usort($array_to_sort, $compare_func);
+}
+
+function createDataTableHTML($name, $fields, $query_script, $limit) {
+
+/* Javascript Code */
+?>
+
+
+<script>
+
+// ==== //
+// Update and sorting code
+// ==== //
+
+var sort_by   = '';
+var sort_type = '';
+
+function build_data(data) {
+	var result = '';
+	for(var i=0; i<strlen(data); i+=2) {
+		
+	}
+}
+
+function update() {
+	var send_data = '';
+	
+	$('.filter').each( function () {
+		var id 			= $(this).attr('id');
+		var index 		= id.indexOf('-');
+		var fieldname 	= id.substr(index+1);
+		
+		//after first pass add &
+		if(send_data != '')
+			send_data += '&';
+			
+		send_data += fieldname + "=" + $(this).val();
+	});
+	send_data += '&sort_by=' + sort_by + '&sort_type=' + sort_type;
+	$.ajax({
+		url: '<?php echo $query_script;?>',
+		type:'POST',
+		data: send_data + '&limit=' + <?php echo $limit;?>,
+		success: function(data){
+			//update result number
+			results = data.split('**&&%%&&**');
+			$('#result-count').html(results[1]);
+			$('#resulting_data').html(results[0]);
+		}
+	});
+}
+
+$('.sort').click( function () {
+
+	var id 			= $(this).attr('id');
+	var index 		= id.indexOf('-');
+	var new_sort 	= id.substr(index+1); //set global sort field
+	
+	
+	if(new_sort != sort_by) {
+		$('.sort').each( function() {		
+			var icon = $(this).children().children('.icon');
+			icon.removeClass('ui-icon');
+			icon.removeClass('ui-icon-triangle-1-s');
+			icon.removeClass('ui-icon-triangle-1-n');
+		});
+		sort_by = new_sort;
+		
+		var icon = $(this).children().children('.icon');		
+		icon.addClass('ui-icon');
+		icon.addClass('ui-icon-triangle-1-s');	
+		sort_type = 'DESC';
+	} else {
+		var icon = $(this).children().children('.icon');
+
+		if(icon.hasClass('ui-icon-triangle-1-s')) {
+			icon.removeClass('ui-icon-triangle-1-s');
+			icon.addClass('ui-icon, ui-icon-triangle-1-n');	
+			sort_type = 'ASCD';
+		} else {
+			icon.removeClass('ui-icon-triangle-1-n');			
+			icon.addClass('ui-icon-triangle-1-s');	
+			sort_type = 'DESC';
+		}	
+	}
+	
+	
+		
+	update();
+});
+
+$('.filter').keyup( function () {
+	wait(40);
+	update();
+});
+update(); //initial data
+
+</script>
+
+
+
+
+<?php
+/* Result Count */
+?>
+
+<div><span id='result-count'></span></div>
+<?php
+/* ======================== */
+// Table header
+/* ======================== */
+?>
+<!--<h2 style='text-align: center; margin-top: 0px;'><?php //echo $name; ?></h2>-->
+<table class='data'>
+<thead>
+
+<?php
+/* ======================== */
+// Table filters
+/* ======================== */
+?> <tr class='unstyle light'> <?php
+
+foreach($fields as $field) { ?>
+	<th class='filter-header'>
+	<?php 
+	if($field[2] == 'text') { 
+	?>
+		<input class='filter' type='text' id='selected-<?php echo $field[1];?>'>
+	<?php 
+	} else if($field[2] == 'select') { 
+	?>
+		<select class='filter' id='selected-<?php echo $field[1];?>' onchange='update()'>
+			<?php 
+				if (isAssoc($field[3]) ) {
+
+					foreach($field[3] as $data => $value) { ?>
+						<option value='<?php echo $data;?>'>
+							<?php echo $value;?>
+						</option>
+					<?php 
+					}
+				
+				} else {
+					foreach($field[3] as $data) { ?>
+						<option value='<?php echo $data;?>'>
+							<?php echo $data;?>
+						</option>
+					<?php 
+					}
+				}
+			?>			
+		</select>
+	<?php 
+	} else if($field[2] == 'date') { ?>
+
+			From:<input class='filter date-from' type='text' style='width: 80px;' id='selected-<?php echo $field[1];?>-from'>
+			To:<input class='filter date-to' type='text' style='width: 80px;' id='selected-<?php echo $field[1];?>-to'>
+			<script>
+			$(function() {
+				$( "#selected-<?php echo $field[1];?>-from, #selected-<?php echo $field[1];?>-to" ).datepicker({
+					onSelect: function(dateText, inst) { 
+						update();
+					},
+					dateFormat: "yy-mm-dd"
+				});
+			});
+
+			</script>
+	<?php } ?>
+	</th>
+<?php
+}
+
+
+/* ======================== */
+// Table Field names
+/* ======================== */
+?>
+<tr class='light'>
+<?php
+
+foreach($fields as $field) { ?>
+	<th style='white-space: nowrap;'>
+		<a class='sort' id='sort-<?php echo $field[1]?>'>
+			<?php echo $field[0]; ?>
+			<span class='ui-state-default'><span class='icon' style='float: right;'></span></span>
+		</a>
+	</th>
+<?php }
+
+?></tr><?php
+
+/* =========================== */
+// End Header of table
+/* =========================== */
+?>
+</thead>
+	<tbody id='resulting_data'></tbody>
+</table>
+
+<?php } //end of function createDataTableHTML
+
+
+
+
+function strip_numeric_indexes(&$a) {
+	$result = array();
+	foreach($a as $id_key => $value){
+		if(!is_numeric($id_key)) $result[strtoupper($id_key)] = $value;
+	}
+	return $result;
+}
+
+
+function getDistinct($field, $table) {
+	$db = new Database();
+	$db->connect();
+	$qry_string = "SELECT DISTINCT " . $field . " FROM " . $table;
+	$qry = $db->query($qry_string);
+	$result = array('-', '');
+	foreach($qry as $q) {
+		array_push($result, $q[$field]);
+	}
+	$db->close();
+	return $result;
+}
+
+
+?>

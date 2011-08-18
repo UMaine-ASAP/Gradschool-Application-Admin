@@ -1,0 +1,186 @@
+/*************/
+/* Top Level */
+/*************/
+
+html {
+
+}
+
+body {
+margin: 0;
+background-color: #DFE9ED;
+}
+
+body#login {
+background-image: url('http://hoonah.asap.um.maine.edu/grad/application/images/background-tile2.png');
+
+}
+
+#nav {
+width: 150px;
+float: left;
+}
+
+#header {
+background-image: url('http://hoonah.asap.um.maine.edu/grad/application/images/background-tile2.png');
+width: 100%;
+height: 43px;
+}
+
+#logout {
+float: left;
+width: 150px;
+margin-top: 25px;
+}
+#logout div {
+padding-bottom: 0;
+}
+
+
+#body {
+width: 100%;
+margin: 0 auto;
+padding: 0;
+}
+
+#main div{
+min-width: 800px;
+margin: 5px 5px;
+padding: 5px;
+}
+
+#main div table{
+background: #B4C8CF;
+padding: 10px;
+margin: 0 auto;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+border-left: 1px solid #9FAEB3;
+border-top: 1px solid #9FAEB3;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-bottom-left-radius: 4px 4px;
+}
+
+#content{
+display: table-row;
+white-space: nowrap;
+}
+
+ul.tabs {
+	margin: 0;
+	padding: 0;
+	float: left;
+	list-style: none;
+	height: 32px; /*--Set height of tabs--*/
+	border-bottom: 1px solid #999;
+	border-left: 1px solid #999;
+	width: 100%;
+}
+ul.tabs li {
+	float: left;
+	margin: 0;
+	padding: 0;
+	height: 31px; /*--Subtract 1px from the height of the unordered list--*/
+	line-height: 31px; /*--Vertically aligns the text within the tab--*/
+	border: 1px solid #999;
+	border-left: none;
+	margin-bottom: -1px; /*--Pull the list item down 1px--*/
+	overflow: hidden;
+	position: relative;
+	background: #d5d5d5;
+}
+ul.tabs li a {
+	text-decoration: none;
+	color: #333;
+	display: block;
+	font-size: 1.2em;
+	padding: 0 20px;
+	border: 1px solid #fff; /*--Gives the bevel look with a 1px white border inside the list item--*/
+	outline: none;
+}
+ul.tabs li a:hover {
+	background: #ccc;
+}
+html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that the active tab does not listen to the hover properties--*/
+	background: #fff;
+	border-bottom: 1px solid #fff; /*--Makes the active tab look like it's connected with its content--*/
+}
+
+.menu-item, #logout-button{
+margin: 0;
+margin-bottom: 1em;
+}
+.menu-item span.ui-button-text, #logout-button {
+font-size: 13px;
+padding-left: 0;
+padding-right: 0;
+}
+#logout-button { margin-bottom: -20px;
+float:right;
+}
+
+/*******************/
+/* Main Navigation */
+/*******************/
+.window {
+background-color: #DFE9ED;
+/*#B4C8CF*/
+border: 1px solid #9FAEB3;
+-moz-border-radius: 8px;
+-webkit-border-radius: 8px;
+border-top-left-radius: 8px 8px;
+border-top-right-radius: 8px 8px;
+border-bottom-right-radius: 8px 8px;
+border-bottom-left-radius: 8px 8px;
+padding: 1em;
+}
+
+.inner {
+
+min-height: 50px;
+margin: 3px;
+padding: 10px 9px 7px;
+background: #B4C8CF;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+border-left: 1px solid #9FAEB3;
+border-top: 1px solid #9FAEB3;
+border-top-left-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+border-bottom-left-radius: 4px 4px;
+}
+
+.dark{
+background-color: #E5E5E5;
+}
+
+.light {
+background-color: #D5D5D5;
+}
+
+/****************/
+/* Main Content */
+/****************/
+.sort {
+color: blue;
+}
+
+.sort:hover {
+cursor: hand;
+text-decoration: underline;
+}
+
+/*span span.icon {
+float: right; 
+position: relative;
+margin-top: -20px;
+}*/
+/* Header */
+
+/* Content */
+
+/* Footer */
+

@@ -1,0 +1,2 @@
+need to merge variables with appliction/lib variables 
+this project should share some of the same globals with the application data for easier maintenance
