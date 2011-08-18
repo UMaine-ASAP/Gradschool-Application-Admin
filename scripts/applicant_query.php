@@ -142,7 +142,7 @@ foreach($applicants as $applicant) {
 			if ($applicant['essay_file_name']) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
-				$ext = end(explode(".", $applicant['essay_file_name']);
+				$ext = end(explode(".", $applicant['essay_file_name']));
 				$filename = "essay_".$applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".".$ext;
 				echo "<a href='getFile.php?FileName=$filename&FileType=essay' target='_blank'>Essay</a>";
 			}
@@ -152,7 +152,7 @@ foreach($applicants as $applicant) {
 			if($applicant['resume_file_name']) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
-				$ext = end(explode(".", $applicant['resume_file_name']);
+				$ext = end(explode(".", $applicant['resume_file_name']));
 				$filename = "resume_".$applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".".$ext;
 				echo "<a href='getFile.php?FileName=$filename&FileType=resume' target='_blank'>Resume</a>";
 							}
