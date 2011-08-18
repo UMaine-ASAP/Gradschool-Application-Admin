@@ -17,7 +17,7 @@ if(check_ses_vars() != '') {
 	}
 	
 	// Build Content-Type
-	header("Content-Type: " . mime_content_type($_GET['FileName']) );
+	header("Content-Type:" . mime_content_type($_GET['FileName']) );
 	
 	header("Content-Length: " . filesize($file));
 	readfile($file);

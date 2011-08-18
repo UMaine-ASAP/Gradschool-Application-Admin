@@ -38,7 +38,6 @@ verifyUser();
 	</div>
 </div>
 </body>
-
 <script>
 
 function loadPage(page, limit) {
