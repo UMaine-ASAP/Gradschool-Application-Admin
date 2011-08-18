@@ -420,7 +420,7 @@ function getDistinct($field, $table) {
 
             // open office
             'odt' => 'application/vnd.oasis.opendocument.text',
-            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet'
         );
 
         $ext = strtolower(array_pop(explode('.',$filename)));
