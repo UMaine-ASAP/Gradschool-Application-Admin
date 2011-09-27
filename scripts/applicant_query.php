@@ -82,6 +82,7 @@ foreach($applicants as $applicant) {
 	if( filter_set($applicant, 	  'direct', 	Array('application_fee_payment_status'))
 		|| filter_set($applicant, 'contained', Array('email', 'given_name', 'family_name', 'applicant_id'))
 		|| filter_set($applicant, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
+		|| $_POST['given_name'] != '' && preg_match('/'.$_POST['given_name'].'/i', $applicant['family_name']) === 0;		
 		) continue;
 		
 	//check date
@@ -118,13 +119,12 @@ foreach($applicants as $applicant) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
 				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
-				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . "</a>";
+				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . $applicant['family_name'] . "</a>";
 			} else {
-				echo $applicant['given_name'];
+				echo $applicant['given_name'] . $applicant['family_name'];
 			}		
  			?> 				
 		</td>
-		<td><?php echo $applicant['family_name']; ?></td>
 
 		<!-- academic info -->
 		<td><?php echo $applicant['academic_program'] . ' ' . get_academic_name($applicant['academic_program']); ?></td>

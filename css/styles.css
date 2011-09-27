@@ -96,5 +96,7 @@ padding: 4px;
 #main, .data {
 font-size: 12px;
 }	
-/* Footer */
-
+/* Special */
+#selected-applicant_id {
+	width: 60px;	
+}
