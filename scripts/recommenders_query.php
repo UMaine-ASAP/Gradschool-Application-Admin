@@ -48,15 +48,6 @@ foreach($all_references as $reference) {
 	
 	$curr_id = $reference['applicant_id'];
 	
-	 if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
-		 || $_POST['recommender_name'] != '' && preg_match('/'.$_POST['recommender_name'].'/i', $reference['reference_first']) === 0 && preg_match('/'.$_POST['recommender_name'].'/i', $applicant['recommender_last']) === 0
-		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['middle_name']) === 0
-		 ) continue;
-
-	// Check for blank reference
-	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
-		continue;
-		 
 	// Construct Applicant Name
 	$applicant = $db->query("SELECT * FROM applicants WHERE applicant_id = " . $reference['applicant_id']);
 	$applicant = $applicant[0];
@@ -68,7 +59,18 @@ foreach($all_references as $reference) {
 		$applicant_name .= $applicant['middle_name'] . " ";
 	}
 	$applicant_name .= $applicant['family_name'];
+	
+	
+	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
+		 || $_POST['recommender_name'] != '' && preg_match('/'.$_POST['recommender_name'].'/i', $reference['reference_first']) === 0 && preg_match('/'.$_POST['recommender_name'].'/i', $reference['recommender_last']) === 0
+//		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['middle_name']) === 0
+		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
+		 ) continue;
 
+	// Check for blank reference
+	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
+		continue;
+		 
 ?>
 
 	<tr class='<?php echo $color;?>' id='reference_data'>
