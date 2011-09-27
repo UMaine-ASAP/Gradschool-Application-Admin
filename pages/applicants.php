@@ -53,7 +53,6 @@ $fields = array(
 	
 	array('Acad Load', 	'attendance_load',  'select', array('-','P', 'F')),
 	array('Email', 		'email', 					'text'),	
-	array('Application', 		'application', 		'text'),
 	array('Essay', 		'essay', 					'text'),
 	array('Resume', 		'resume', 				'text')
 	

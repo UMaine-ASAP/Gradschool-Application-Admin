@@ -113,7 +113,17 @@ foreach($applicants as $applicant) {
 		<td><?php echo ($applicant['has_been_submitted'] == 1) ? 'yes' : 'no'; ?></td>
 
 		<!-- applicant info -->
-		<td><?php echo $applicant['given_name']; ?> </td>
+		<td><?php 
+			if($applicant['has_been_submitted'] == 1) {
+				$exDOB = explode("/", $applicant['date_of_birth']);
+				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
+				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
+				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . "</a>";
+			} else {
+				echo $applicant['given_name'];
+			}		
+ 			?> 				
+		</td>
 		<td><?php echo $applicant['family_name']; ?></td>
 
 		<!-- academic info -->
@@ -131,14 +141,6 @@ foreach($applicants as $applicant) {
 				echo "<a href='mailto:$email'>$email</a>";
 			?>
 		</td>
-		<td><?php 
-			if($applicant['has_been_submitted'] == 1) {
-				$exDOB = explode("/", $applicant['date_of_birth']);
-				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
-				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
-				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>Application</a>";
-			}
-		?></td>
 		<td><?php
 			if ($applicant['essay_file_name']) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
