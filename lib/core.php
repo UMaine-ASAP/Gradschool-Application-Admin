@@ -109,13 +109,18 @@ function filter(&$src, $type, $field) {
 }
 
 
-function sort_array(&$array_to_sort, $sort_by, $sort_type) {
+function sort_array(&$array_to_sort, $sort_by, $sort_type, $value = 'text') {
 
 	if( $sort_by != '' && $sort_type != '' ) {
 		//construct specific comparison function
 		$cmp = $sort_type == 'ASCD' ? '<' : '>';
-		$v1 = 'strtolower($a["' . $sort_by . '"])';
-		$v2 = 'strtolower($b["' . $sort_by . '"])';
+		if($value == 'text') {
+			$v1 = 'strtolower($a["' . $sort_by . '"])';
+			$v2 = 'strtolower($b["' . $sort_by . '"])';
+		} else if ($value = 'numeric') {
+			$v1 = 'intval($a["' . $sort_by . '"])';
+			$v2 = 'intval($b["' . $sort_by . '"])';
+		}
 		$func_str = "return strcmp( $v1, $v2 ) $cmp 0 ;";
 
 		//sort using function

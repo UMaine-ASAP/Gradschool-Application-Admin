@@ -17,7 +17,7 @@ $fields = array(
 //	array('Recommender Last', 'reference_last',		'text'),
 	
 	array('Email', 		 'reference_email', 'text'),
-	array('Letters', 	 'letter', 			'text')	
+//	array('Letters', 	 'letter', 			'text')	
 );
 
 createDataTableHTML('Recommenders', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/recommenders_query.php", $_POST['limit']);

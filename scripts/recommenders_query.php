@@ -25,8 +25,8 @@ function checkValue($v) { return isset($v) && $v != '';}
 
 //Get reference information
 $references1 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference1_first as reference_first, reference1_last as reference_last, reference1_email as reference_email  FROM applicants");
-$references2 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
-$references3 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
+$references2 = $db->query("SELECT applicant_id, reference2_filename as reference_filename, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
+$references3 = $db->query("SELECT applicant_id, reference3_filename as reference_filename, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
 $referencesX = $db->query("SELECT applicant_id, reference_filename,						   reference_first,					 reference_last,					reference_email,					 FROM extrareferences");
 
 $all_references = array_merge($references1, $references2, $references3, $referencesX);
@@ -35,7 +35,7 @@ $all_references = array_merge($references1, $references2, $references3, $referen
 
 if( 'sort_by' )
 //sort_array($all_references, $_POST['sort_by'], $_POST['sort_type']);
-sort_array($all_references, 'applicant_id', "DESC");
+sort_array($all_references, 'applicant_id', "DESC", 'numeric');
 
 
 //Order by
@@ -64,12 +64,21 @@ foreach($all_references as $reference) {
 	$applicant_name .= $applicant['family_name'];
 	
 	
-	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
+	//=== Filters ===
+	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id')),
 		 || $_POST['reference_name'] != '' && preg_match('/'.$_POST['reference_name'].'/i', $reference['reference_first'] . " " . $reference['recommender_last']) === 0
-//		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['middle_name']) === 0
 		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		 ) continue;
 
+	// Check for submitted test
+		if( $_POST['submitted'] != "-") {
+			if($_POST['submitted'] == 'yes' && $reference['reference_filename'] == "") {
+				continue;
+			} else if($_POST['submitted'] == 'no' && $reference['reference_filename'] != "") {
+				continue;
+			}
+		}
+		 
 	// Check for blank reference
 	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
 		continue;
