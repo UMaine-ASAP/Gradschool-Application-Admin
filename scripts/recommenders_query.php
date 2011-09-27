@@ -24,10 +24,10 @@ function insertQueryString(&$str, $field, $var = '') {
 function checkValue($v) { return isset($v) && $v != '';}
 
 //Get reference information
-$references1 = $db->query("SELECT applicant_id, reference1_first as reference_first, reference1_last as reference_last, reference1_email as reference_email  FROM applicants");
-$references2 = $db->query("SELECT applicant_id, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
-$references3 = $db->query("SELECT applicant_id, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
-$referencesX = $db->query("SELECT applicant_id, reference_first,					 reference_last,					reference_email,					 FROM extrareferences");
+$references1 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference1_first as reference_first, reference1_last as reference_last, reference1_email as reference_email  FROM applicants");
+$references2 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
+$references3 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
+$referencesX = $db->query("SELECT applicant_id, reference_filename,						   reference_first,					 reference_last,					reference_email,					 FROM extrareferences");
 
 $all_references = array_merge($references1, $references2, $references3, $referencesX);
 
@@ -35,7 +35,7 @@ $all_references = array_merge($references1, $references2, $references3, $referen
 
 if( 'sort_by' )
 //sort_array($all_references, $_POST['sort_by'], $_POST['sort_type']);
-sort_array($all_references, 'applicant_id', "ASCD");
+sort_array($all_references, 'applicant_id', "DESC");
 
 
 //Order by
@@ -77,7 +77,12 @@ foreach($all_references as $reference) {
 ?>
 
 	<tr class='<?php echo $color;?>' id='reference_data'>
-		<td> <?php echo '<br>'//echo ($reference['application_submit_date'] != '0000-00-00') ? 'yes' : 'no'; ?></td>
+		<td><?php 
+			if ($reference['reference_filename']) {
+				echo "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>recommendation</a>";
+			}
+		?></td>
+		
 		<td><?php echo $reference['applicant_id']; ?></td>
 		<td><?php echo $applicant_name; ?></td>
 
@@ -88,9 +93,7 @@ foreach($all_references as $reference) {
 				$email = $reference['reference_email'];				
 				echo "<a href='mailto:$email'>$email</a>";				
 			?>
-		</td>
-		<td><?php echo $reference['letters'] ?></td>
-		
+		</td>		
 	</tr>
 
 <?php 

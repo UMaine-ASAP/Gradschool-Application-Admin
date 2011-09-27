@@ -25,8 +25,8 @@ $db_name = "grad5app";
 // Website Settings //
 //////////////////////
 
-$SERVER_ROOT = "http://localhost/";
-$APPMANAGER_ROOT = $SERVER_ROOT . "grad_systeminterface2/trunk/";
+$SERVER_ROOT = "http://hoonah.asap.um.maine.edu/";
+$APPMANAGER_ROOT = $SERVER_ROOT . "grad_systeminterface/";
 /*
 $server_name = $_SERVER['SERVER_NAME'];
 //Where the drupal site is located
@@ -36,10 +36,10 @@ $admin_email = "crystal.burgess@maine.edu";
 
 //Session timeout in seconds
 $session_timeout = 600; //10 minutes
-$completed_pdf_directory;
-$essay_directory;
-$resume_directory;
-$completed_lor_directory = "";
+$completed_pdf_directory = "/Library/WebServer/Documents/grad_application/pdf_export/completed_pdfs/";
+$completed_essay_directory = "/Library/WebServer/Documents/grad_application/essays/";
+$completed_resume_directory = "/Library/WEbServer/Documents/grad_application/essays/";
+$completed_lor_directory = "/Library/WebServer/Documents/grad_application/recommendations/";
 //////////////////////////
 // Application Settings //
 //////////////////////////
