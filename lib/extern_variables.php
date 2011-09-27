@@ -25,8 +25,8 @@ $db_name = "grad5app";
 // Website Settings //
 //////////////////////
 
-
-$home_page = "http://localhost/grad_systeminterface2";
+$SERVER_ROOT = "http://localhost/";
+$APPMANAGER_ROOT = $SERVER_ROOT . "grad_systeminterface2/trunk/";
 /*
 $server_name = $_SERVER['SERVER_NAME'];
 //Where the drupal site is located
@@ -39,7 +39,7 @@ $session_timeout = 600; //10 minutes
 $completed_pdf_directory;
 $essay_directory;
 $resume_directory;
-
+$completed_lor_directory = "";
 //////////////////////////
 // Application Settings //
 //////////////////////////

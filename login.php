@@ -1,3 +1,6 @@
+<?php 
+include 'lib/variables.php';
+?>
 <html>
 <head>
 	<link type="text/css" href="js/jqueryUI/css/custom-theme/jquery-ui-1.8.10.custom.css" rel="stylesheet">
@@ -39,7 +42,7 @@ $('#loginbutton').click( function (){
 
 function login(){
 $.ajax({
-		url: "scripts/login.php",
+		url: "<?php echo $GLOBALS['APPMANAGER_ROOT']?>scripts/login.php",
 		type:'POST',
 		data:'username=' + $('#username').val() + '&password=' + $('#password').val(),
 		success: function(data){

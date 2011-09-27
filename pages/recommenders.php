@@ -20,9 +20,10 @@ $fields = array(
 	array('Letters', 	 'letter', 			'text')	
 );
 
-createDataTableHTML('Recommenders', $fields, "scripts/recommenders_query.php", $_POST['limit']);
+createDataTableHTML('Recommenders', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/recommenders_query.php", $_POST['limit']);
 
 
-} //end user check
-
+} else {
+	echo 'login';
+}
 ?>

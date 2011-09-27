@@ -22,7 +22,7 @@ verifyUser();
 	<div id='nav' class='window'>
 			<div class='center'>
 				<?php echo ucfirst(getUserName($_SESSION['userid']));?>
-				<span class='right'><a href='<?php echo $home_page . '/scripts/logout.php'?>'>Logout</a></span>
+				<span class='right'><a href='<?php echo $GLOBALS['APPMANAGER_ROOT'] . 'scripts/logout.php'?>'>Logout</a></span>
 			</div>
 			
 		<div class='inner'>
@@ -43,12 +43,12 @@ verifyUser();
 function loadPage(page, limit) {
 	limit = limit || <?php echo $SEARCH_LIMIT;?>;
 	$.ajax({
-		url: "pages/" + page + ".php",
+		url: "<?php echo $GLOBALS['APPMANAGER_ROOT'] ?>pages/" + page + ".php",
 		type:'POST',
 		data:"limit=" + limit,
 		success: function(data){
 			if(data == 'login') {
-				window.location.href = 'login.php';		
+				window.location.href =  '<?php echo $GLOBALS['APPMANAGER_ROOT'] ?>login.php';		
 			} else {
 				$('#main div').html(data);
 			}
@@ -76,6 +76,7 @@ $('.menu-item').click(function () {
 
 /*== Preload applicants ==*/
 loadPage('applicants');
+$('#applicants').addClass('ui-state-active-constant');
 
 </script>
 </html>

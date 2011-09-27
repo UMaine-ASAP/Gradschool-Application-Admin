@@ -48,7 +48,7 @@ function user_logout() {
 
 function verifyUser() {
 	if(check_ses_vars() == '') {
-		header('Location:' . $GLOBALS['home_page'] . '/login.php');
+		header('Location:' . $GLOBALS['APPMANAGER_ROOT'] . '/login.php');
 	}
 }
 
@@ -439,4 +439,14 @@ function getDistinct($field, $table) {
     }
 
 
+ //Acts as a normal php include except output of script is returned from function instead of outputed to browser
+function get_include_contents($filename) {
+    if (is_file($filename)) {
+        ob_start();
+        include $filename;
+        return ob_get_clean();
+    }
+    return false;
+}
+    
 ?>

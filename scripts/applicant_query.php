@@ -109,6 +109,7 @@ foreach($applicants as $applicant) {
 
 	<tr class='<?php echo $color;?>' id='applicant_data'>
 		<td><?php echo $applicant['applicant_id']; ?></td>
+		<td><?php echo $applicant['application_payment_method']; ?></td>		
 		<td><?php echo ($applicant['has_been_submitted'] == 1) ? 'yes' : 'no'; ?></td>
 
 		<!-- applicant info -->
@@ -187,9 +188,7 @@ if($_POST['limit'] == -1) {
 }
 	echo '**&&%%&&**' . $count_statement;
 
-}//end check ses vars
-
-?>
-
-
-	
+} else {//end check ses vars
+	echo "login";
+}
+?>	

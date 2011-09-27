@@ -23,14 +23,11 @@ function insertQueryString(&$str, $field, $var = '') {
 
 function checkValue($v) { return isset($v) && $v != '';}
 
-//build query
-
-
+//Get reference information
 $references1 = $db->query("SELECT applicant_id, reference1_first as reference_first, reference1_last as reference_last, reference1_email as reference_email  FROM applicants");
 $references2 = $db->query("SELECT applicant_id, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
 $references3 = $db->query("SELECT applicant_id, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
 $referencesX = $db->query("SELECT applicant_id, reference_first,					 reference_last,					reference_email,					 FROM extrareferences");
-// TODO: Deal with extra references
 
 $all_references = array_merge($references1, $references2, $references3, $referencesX);
 
@@ -91,9 +88,9 @@ foreach($all_references as $reference) {
 	</tr>
 
 <?php 
+}//end loop processing
+
+} else {//end check ses vars
+	echo "login";
 }
-
-
-
-} //end user check 
 ?>

@@ -16,6 +16,7 @@ $academic_degree		= 	getDistinct('academic_degree', 'um_academic');
 
 
 $fields = array(
+	array('Active', 'active', 'select', array('-', 'yes','no')),
 	array('Academic Program', 	'academic_program', 	'text'),//'select', $academic_programs),
 	array('Academic Dept Code', 'academic_dept_code', 	'text'),//''select', $academic_dept_code),
 	array('Academic Dept', 		'academic_dept', 		'text'),//''select', $academic_dept_heading),
@@ -28,21 +29,13 @@ $fields = array(
 	array('NEBHE VT', 		'nebhe_vt', 	'select', array('-','', 'X'))
 );
 
-createDataTableHTML('Programs', $fields, "scripts/programs_query.php", $_POST['limit']);
+createDataTableHTML('Programs', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/programs_query.php", $_POST['limit']);
 
 
 include 'add_info.php';
 
 
-} //end user check
+} else {
+	echo 'login';
+}
 ?>
-<script>
-$(function () {	
-});
-
-</script>
-<!--
-<div id="dialog-confirm" title="Empty the recycle bin?">
-	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
-</div>
--->

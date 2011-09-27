@@ -14,6 +14,8 @@ if(check_ses_vars() != '') {
 		$file = $GLOBALS['completed_essay_directory'] . $_GET['FileName'];
 	} else if($_GET['FileType'] == 'resume') {
 		$file = $GLOBALS['completed_resume_directory'] . $_GET['FileName'];
+	} else if($_GET['FileType'] == 'LOR') {
+		$file = $GLOBALS['completed_lor_directory'] . $_GET['FileName'];
 	}
 	
 	// Build Content-Type
