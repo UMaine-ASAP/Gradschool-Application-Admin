@@ -13,8 +13,8 @@ $fields = array(
 	array('Applicant ID', 		 'applicant_id', 			'text'),
 	array('Applicant Name', 	 'applicant_name', 			'text'),
 	
-	array('Recommender First', 'reference_first',		'text'),
-	array('Recommender Last', 'reference_last',		'text'),
+	array('Recommender Name', 'reference_name',		'text'),
+//	array('Recommender Last', 'reference_last',		'text'),
 	
 	array('Email', 		 'reference_email', 'text'),
 	array('Letters', 	 'letter', 			'text')	

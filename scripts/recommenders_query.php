@@ -48,7 +48,9 @@ foreach($all_references as $reference) {
 	
 	$curr_id = $reference['applicant_id'];
 	
-	 if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id', 'reference_first', 'reference_last'))
+	 if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
+		 || $_POST['recommender_name'] != '' && preg_match('/'.$_POST['recommender_name'].'/i', $reference['reference_first']) === 0 && preg_match('/'.$_POST['recommender_name'].'/i', $applicant['recommender_last']) === 0
+		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['middle_name']) === 0
 		 ) continue;
 
 	// Check for blank reference
@@ -74,8 +76,7 @@ foreach($all_references as $reference) {
 		<td><?php echo $reference['applicant_id']; ?></td>
 		<td><?php echo $applicant_name; ?></td>
 
-		<td><?php echo $reference['reference_first'] ?></td>
-		<td><?php echo $reference['reference_last']  ?></td>
+		<td><?php echo $reference['reference_first'] . " " . $reference['reference_last']  ?></td>
 		
 		<td>
 			<?php 

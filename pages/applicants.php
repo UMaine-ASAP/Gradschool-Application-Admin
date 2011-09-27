@@ -37,7 +37,7 @@ $fields = array(
 	array('External ID', 'applicant_id', 				'text'),
 	array('Online Payment', 'application_payment_method', 'select', array('-', 'PAYLATER', 'PAYNOW')),	
 	array('Completed', 	'has_been_submitted', 		'select', array('-','yes', 'no')),
-	array('First Name', 'given_name', 				'text', array('Last Name', 	'family_name', 				'text') ),
+	array('Applicant', 'applicant_name', 				'text'),
 //	array('Last Name', 	'family_name', 				'text'),
 	
 
