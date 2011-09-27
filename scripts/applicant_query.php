@@ -119,9 +119,9 @@ foreach($applicants as $applicant) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
 				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
-				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . $applicant['family_name'] . "</a>";
+				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . " " . $applicant['family_name'] . "</a>";
 			} else {
-				echo $applicant['given_name'] . $applicant['family_name'];
+				echo $applicant['given_name'] . " " . $applicant['family_name'];
 			}		
  			?> 				
 		</td>
