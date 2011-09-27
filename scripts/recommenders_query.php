@@ -65,7 +65,7 @@ foreach($all_references as $reference) {
 	
 	
 	//=== Filters ===
-	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id')),
+	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
 		 || $_POST['reference_name'] != '' && preg_match('/'.$_POST['reference_name'].'/i', $reference['reference_first'] . " " . $reference['recommender_last']) === 0
 		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		 ) continue;
