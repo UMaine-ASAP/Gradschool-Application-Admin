@@ -33,7 +33,10 @@ $all_references = array_merge($references1, $references2, $references3, $referen
 
 
 
-sort_array($all_references, $_POST['sort_by'], $_POST['sort_type']);
+if( 'sort_by' )
+//sort_array($all_references, $_POST['sort_by'], $_POST['sort_type']);
+sort_array($all_references, 'applicant_id', "ASCD");
+
 
 //Order by
 
@@ -43,7 +46,7 @@ foreach($all_references as $reference) {
 	
 	//toogle colors based on user
 	if($curr_id != $reference['applicant_id']) {
-		$color = $color == 'light'? 'dark' : 'light';
+		$color = $reference['applicant_id']%2 == 0 ? 'dark' : 'light';
 	}
 	
 	$curr_id = $reference['applicant_id'];
@@ -62,7 +65,7 @@ foreach($all_references as $reference) {
 	
 	
 	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
-		 || $_POST['recommender_name'] != '' && preg_match('/'.$_POST['recommender_name'].'/i', $reference['reference_first']) === 0 && preg_match('/'.$_POST['recommender_name'].'/i', $reference['recommender_last']) === 0
+		 || $_POST['reference_name'] != '' && preg_match('/'.$_POST['reference_name'].'/i', $reference['reference_first'] . " " . $reference['recommender_last']) === 0
 //		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['middle_name']) === 0
 		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		 ) continue;

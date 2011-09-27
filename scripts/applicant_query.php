@@ -78,11 +78,21 @@ $color = 'light';
 $count = 0;
 
 foreach($applicants as $applicant) { 
+
+	$applicant_name = '';
+	if($applicant['given_name'] != '') {
+		$applicant_name .= $applicant['given_name'] . " ";
+	}
+	if($applicant['middle_name'] != '') {
+		$applicant_name .= $applicant['middle_name'] . " ";
+	}
+	$applicant_name .= $applicant['family_name'];
+	
 	
 	if( filter_set($applicant, 	  'direct', 	Array('application_fee_payment_status'))
 		|| filter_set($applicant, 'contained', Array('email', 'applicant_id'))
 		|| filter_set($applicant, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
-		|| $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['applicant_name'].'/i', $applicant['given_name']) === 0
+		|| $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		) continue;
 		
 	//check date
@@ -119,9 +129,9 @@ foreach($applicants as $applicant) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
 				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
-				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['given_name'] . " " . $applicant['family_name'] . "</a>";
+				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant_name . "</a>";
 			} else {
-				echo $applicant['given_name'] . " " . $applicant['family_name'];
+				echo $applicant_name;
 			}		
  			?> 				
 		</td>
