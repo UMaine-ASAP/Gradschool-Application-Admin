@@ -80,9 +80,9 @@ $count = 0;
 foreach($applicants as $applicant) { 
 	
 	if( filter_set($applicant, 	  'direct', 	Array('application_fee_payment_status'))
-		|| filter_set($applicant, 'contained', Array('email', 'given_name', 'family_name', 'applicant_id'))
+		|| filter_set($applicant, 'contained', Array('email', 'applicant_id'))
 		|| filter_set($applicant, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
-		|| $_POST['given_name'] != '' && preg_match('/'.$_POST['given_name'].'/i', $applicant['family_name']) === 0
+		|| $_POST['given_name'] != '' && preg_match('/'.$_POST['given_name'].'/i', $applicant['family_name']) === 0 && preg_match('/'.$_POST['given_name'].'/i', $applicant['given_name']) === 0
 		) continue;
 		
 	//check date
