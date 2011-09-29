@@ -51,7 +51,7 @@ if(checkValue($_POST['program'])) {
 }
 
 $applicants = $db->query($qry);
-print "<h3>$$$##$#$". $qry . "</script>";
+print "<h3>$$$##$#$". print_r($applicants) . "</script>";
 
 //merge academic data
 foreach($applicants as &$applicant) {
