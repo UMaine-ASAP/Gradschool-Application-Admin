@@ -53,11 +53,11 @@ if(checkValue($_POST['program'])) {
 $applicants = $db->query($qry);
 
 //merge academic data
-foreach($applicants as &$applicant) {
-	$result	= $db->query("SELECT * FROM appliedprograms WHERE applicant_id = %i", $applicant['applicant_id']);
-	$academics = $result[0];
+//foreach($applicants as &$applicant) {
+//	$result	= $db->query("SELECT * FROM appliedprograms WHERE applicant_id = %i", $applicant['applicant_id']);
+//	$academics = $result[0];
 	//$applicant = array_merge($applicant, $academics);	
-}
+//}
 
 
 /* =========== */
@@ -65,9 +65,9 @@ foreach($applicants as &$applicant) {
 //$_POST['sortby'] = 'application_submit_date';
 //$_POST['sort_type'] = 'ASCD';
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
-//	sort_array_by_date($applicants, "application_submit_date", "ASCD");
+	sort_array_by_date($applicants, "application_submit_date", "ASCD");
 } else {
-//	sort_array($applicants, $_POST['sort_by'], $_POST['sort_type']);
+	sort_array($applicants, $_POST['sort_by'], $_POST['sort_type']);
 }
 
 
