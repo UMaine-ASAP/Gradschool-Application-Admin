@@ -57,7 +57,7 @@ $applicants = $db->query($qry);
 foreach($applicants as &$applicant) {
 	$result	= $db->query("SELECT * FROM appliedprograms WHERE applicant_id = %i", $applicant['applicant_id']);
 	$academics = $result[0];
-	$applicant = array_merge($applicant, $academics);	
+	//$applicant = array_merge($applicant, $academics);	
 }
 
 
