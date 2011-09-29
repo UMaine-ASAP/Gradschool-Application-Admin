@@ -88,7 +88,7 @@ foreach($all_references as $reference) {
 	<tr class='<?php echo $color;?>' id='reference_data'>
 		<td><?php 
 			if ($reference['reference_filename']) {
-				$date = explode('.', end(explode('_', $reference['reference_filename']))); //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
+				$date = explode('.', end(explode('_', $reference['reference_filename'])))[0]; //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
 				echo "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$date</a>";
 			}
 		?></td>
