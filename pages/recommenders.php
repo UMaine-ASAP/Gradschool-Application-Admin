@@ -16,7 +16,7 @@ $fields = array(
 	array('Recommender Name', 'reference_name',		'text'),
 //	array('Recommender Last', 'reference_last',		'text'),
 	
-	array('Email', 		 'reference_email', 'text'),
+	array('Recommender Email', 		 'reference_email', 'text'),
 //	array('Letters', 	 'letter', 			'text')	
 );
 
