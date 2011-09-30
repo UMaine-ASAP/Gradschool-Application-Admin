@@ -9,7 +9,7 @@ $db = Database::get();
 $applicants = $db->query("SELECT * FROM applicants");
 
 $fields = array(
-	array('Date Submitted', 	 'submitted', 		'select', array('-', 'yes', 'no')),
+	array('Date Submitted', 	 'recommender_submit_date', 	'date'),
 	array('Applicant ID', 		 'applicant_id', 			'text'),
 	array('Applicant Name', 	 'applicant_name', 			'text'),
 	

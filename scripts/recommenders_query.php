@@ -72,19 +72,21 @@ foreach($all_references as $reference) {
 		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		 ) continue;
 
-	// Check for submitted test
- 		if( $_POST['submitted'] != "-") {
-			if($_POST['submitted'] == 'yes' && $reference['reference_filename'] == "") {
-				continue;
-			} else if($_POST['submitted'] == 'no' && $reference['reference_filename'] != "") {
-				continue;
-			}
-		}
-		 
+	//check date
+	$date = $reference['reference_filename'] ? current(explode('.', end(explode('_', $reference['reference_filename'])))) : "";  //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
+	
+	if( 
+		!check_in_range( $_POST['recommender_submit_date-from'], $_POST['recommender_submit_date-to'], $date ) 
+		&& $_POST['recommender_submit_date-to']		!=''
+		&& $_POST['recommender_submit_date-from']	!=''
+		){
+		continue;
+	}
+		 		 
 	// Check for blank reference
 	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
 		continue;
-
+		
 	$count++;
 	//If over SEARCH_LIMIT stop displaying
 	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
@@ -96,7 +98,6 @@ foreach($all_references as $reference) {
 	<tr class='<?php echo $color;?>' id='reference_data'>
 		<td><?php 
 			if ($reference['reference_filename']) {
-				$date = current(explode('.', end(explode('_', $reference['reference_filename'])))); //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
 				echo "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$date</a>";
 			}
 		?></td>
