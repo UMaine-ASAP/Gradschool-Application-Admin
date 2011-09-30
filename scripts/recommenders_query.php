@@ -74,7 +74,10 @@ foreach($all_references as $reference) {
 
 	//check date
 	$date = $reference['reference_filename'] ? current(explode('.', end(explode('_', $reference['reference_filename'])))) : "";  //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
-	
+	if($date != "") {
+		$items = explode('-', $date);
+		$date = $items[2] . "-" . $items[0] . "-" . $items[1];
+	}
 	if( 
 		!check_in_range( $_POST['recommender_submit_date-from'], $_POST['recommender_submit_date-to'], $date ) 
 		&& $_POST['recommender_submit_date-to']		!=''
