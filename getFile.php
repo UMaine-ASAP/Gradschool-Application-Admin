@@ -5,7 +5,7 @@ include_once 'lib/core.php';
 
 //make sure user is valid
 if(check_ses_vars() != '') {
-	$_GET['FileName'] = str_replace("..", $_GET['FileName']);
+	$_GET['FileName'] = str_replace("..", "", $_GET['FileName']);
 	// Build File
 	if ($_GET['FileType'] == 'application') {
 		$file = $GLOBALS['completed_pdf_directory'] . $_GET['FileName'];	
