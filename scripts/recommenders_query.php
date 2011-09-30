@@ -118,6 +118,7 @@ foreach($all_references as $reference) {
 
 <?php 
 	} else if($_GET['mode'] == 'csv') {
+		$csv_data[] = $output_data;
 	}//end mode processing
 
 }//end loop processing
@@ -146,6 +147,23 @@ if($_POST['limit'] == -1) {
 }
 	echo '**&&%%&&**' . $count_statement;
 
+//Output CSV to screen
+if($_GET['mode'] == 'csv') {
+	$fp = fopen('file.csv', 'w');
+
+	foreach ($csv_data as $fields) {
+    	fputcsv($fp, $fields);
+	}
+
+	fclose($fp);	
+	
+	header('Content-type: text/csv');
+	//open/save dialog box
+	header('Content-Disposition: attachment; filename="recommender.csv"');
+	//read from server and write to buffer
+	readfile('file.csv');
+}
+	
 } else {//end check ses vars
 	echo "login";
 }
