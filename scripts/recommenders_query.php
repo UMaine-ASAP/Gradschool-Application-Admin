@@ -120,11 +120,11 @@ foreach($all_references as $reference) {
 
 <script>
 $('#display-all-results').click( function() {
-	loadPage('applicants', -1);
+	loadPage('recommenders', -1);
 });
 
 $('#limit-search-results').click( function() {
-	loadPage('applicants');
+	loadPage('recommenders');
 });
 
 </script>
