@@ -171,16 +171,6 @@ foreach($applicants as $applicant) {
 							}
 		?>		
 		</td>
-		<td><?php 
-			if($applicant['application_process_status'] == '') {
-				echo "Processing";
-			} else if($applicant['application_process_status'] == 'T') {
-				echo "Success";
-			} else if($applicant['application_process_status'] == 'F') {
-				echo "Failure";
-			}
-		?>	
-		</td>
 	</tr>
 
 <?php } 

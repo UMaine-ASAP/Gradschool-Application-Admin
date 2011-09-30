@@ -105,8 +105,8 @@ foreach($all_references as $reference) {
 	$output_data[] = $reference['reference_first'] . " " . $reference['reference_last'];
 	$email = $reference['reference_email'];
 	$output_data[] = $email;
-	if( !isset($_GET['mode']) ) {
-		// Web Mode
+
+	// Web Mode
 ?>
 	<tr class='<?php echo $color;?>' id='reference_data'>
 		<?php 
@@ -130,12 +130,9 @@ foreach($all_references as $reference) {
 	</tr>
 
 <?php 
-	} else if($_GET['mode'] == 'csv') {
-		$csv_data[] = $output_data;
-	}//end mode processing
 
 }//end loop processing
-if( !isset($_GET['mode'])) {
+
 ?>
 
 <script>
@@ -160,24 +157,7 @@ $('#limit-search-results').click( function() {
 		$count_statement = "$count Results Found!";
 	}
 	echo '**&&%%&&**' . $count_statement;
-}
 
-//Output CSV to screen
-if($_GET['mode'] == 'csv') {
-	$fp = fopen( $GLOBALS['csv_directory'] . 'recommender.csv', 'w');
-
-	foreach ($csv_data as $fields) {
-    	fputcsv($fp, $fields);
-	}
-
-	fclose($fp);	
-	
-	header('Content-type: text/csv');
-	//open/save dialog box
-	header('Content-Disposition: attachment; filename="recommender.csv"');
-	//read from server and write to buffer
-	readfile( $GLOBALS['csv_directory'] . 'recommender.csv');
-}
 	
 } else {//end check ses vars
 	echo "login";

@@ -54,9 +54,7 @@ $fields = array(
 	array('Acad Load', 	'attendance_load',  'select', array('-','P', 'F')),
 	array('Email', 		'email', 					'text'),	
 	array('Essay', 		'essay', 					'text'),
-	array('Resume', 		'resume', 				'text'),
-	array('Status', 'application_process_status', 'select', array('-', 'Processing', 'Success', 'Failure'))
-	
+	array('Resume', 		'resume', 				'text'),	
 );
 
 createDataTableHTML('Applicants', $fields, "scripts/applicant_query.php", $_POST['limit']);
