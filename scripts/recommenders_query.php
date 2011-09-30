@@ -122,6 +122,7 @@ foreach($all_references as $reference) {
 	}//end mode processing
 
 }//end loop processing
+if( !isset($_GET['mode'])) {
 ?>
 
 <script>
@@ -135,17 +136,18 @@ $('#limit-search-results').click( function() {
 
 </script>
 <?php
-if($_POST['limit'] == -1) {
-	$count_statement = "Displaying all $count results! <div><a id='limit-search-results' href='#'>Limit to $SEARCH_LIMIT Results</a></div>";
-} else if($count > $_POST['limit'] && $_POST['limit'] > 0) {
-	$count = $count - 1;
-	$count_statement = "Over $count Results Found!<div><a id='display-all-results' href='#'>Display all results</a></div>";
-} else if($count == 1) {
-	$count_statement = "One Result Found!";
-} else {
-	$count_statement = "$count Results Found!";
-}
+	if($_POST['limit'] == -1) {
+		$count_statement = "Displaying all $count results! <div><a id='limit-search-results' href='#'>Limit to $SEARCH_LIMIT Results</a></div>";
+	} else if($count > $_POST['limit'] && $_POST['limit'] > 0) {
+		$count = $count - 1;
+		$count_statement = "Over $count Results Found!<div><a id='display-all-results' href='#'>Display all results</a></div>";
+	} else if($count == 1) {
+		$count_statement = "One Result Found!";
+	} else {
+		$count_statement = "$count Results Found!";
+	}
 	echo '**&&%%&&**' . $count_statement;
+}
 
 //Output CSV to screen
 if($_GET['mode'] == 'csv') {
