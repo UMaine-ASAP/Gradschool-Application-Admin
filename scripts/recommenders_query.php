@@ -99,19 +99,32 @@ foreach($all_references as $reference) {
 	
 	//Build output data
 	$output_data = Array();
-	$output_data[] = ($reference['reference_filename']) ? "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$date</a>" : "";
+	$output_data[] = ($reference['reference_filename']) ? $date : "";
 	$output_data[] = $reference['applicant_id'];
 	$output_data[] = $applicant_name;
 	$output_data[] = $reference['reference_first'] . " " . $reference['reference_last'];
 	$email = $reference['reference_email'];
-	$output_data[] = "<a href='mailto:$email'>$email</a>";
+	$output_data[] = $email;
 	if( !isset($_GET['mode']) ) {
 		// Web Mode
 ?>
 	<tr class='<?php echo $color;?>' id='reference_data'>
 		<?php 
+			$ct = 0;
 			foreach($output_data as $item) {
-				echo "<td>$item</td>";
+				if($ct == 0) {
+					echo "<td>
+							<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$item</a>
+						</td>";
+					;
+				} else if($ct == 4) {
+					echo "<td>
+							<a href='mailto:$item'>$item</a>
+						</td>";
+				} else {
+					echo "<td>$item</td>";
+				}
+				$ct++;
 			}
 		?>
 	</tr>
