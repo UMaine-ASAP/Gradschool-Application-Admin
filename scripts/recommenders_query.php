@@ -42,6 +42,8 @@ sort_array($all_references, 'applicant_id', "DESC", 'numeric');
 
 $curr_id = -1;
 $color = 'light';
+$count = 0;
+
 foreach($all_references as $reference) {
 	
 	//toogle colors based on user
@@ -82,7 +84,13 @@ foreach($all_references as $reference) {
 	// Check for blank reference
 	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
 		continue;
-		 
+
+	$count++;
+	//If over SEARCH_LIMIT stop displaying
+	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
+		break;
+	}
+		
 ?>
 
 	<tr class='<?php echo $color;?>' id='reference_data'>
@@ -108,6 +116,30 @@ foreach($all_references as $reference) {
 
 <?php 
 }//end loop processing
+?>
+
+<script>
+$('#display-all-results').click( function() {
+	loadPage('applicants', -1);
+});
+
+$('#limit-search-results').click( function() {
+	loadPage('applicants');
+});
+
+</script>
+<?php
+if($_POST['limit'] == -1) {
+	$count_statement = "Displaying all $count results! <div><a id='limit-search-results' href='#'>Limit to $SEARCH_LIMIT Results</a></div>";
+} else if($count > $_POST['limit'] && $_POST['limit'] > 0) {
+	$count = $count - 1;
+	$count_statement = "Over $count Results Found!<div><a id='display-all-results' href='#'>Display all results</a></div>";
+} else if($count == 1) {
+	$count_statement = "One Result Found!";
+} else {
+	$count_statement = "$count Results Found!";
+}
+	echo '**&&%%&&**' . $count_statement;
 
 } else {//end check ses vars
 	echo "login";

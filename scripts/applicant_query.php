@@ -108,6 +108,7 @@ foreach($applicants as $applicant) {
 	if( $_POST['name'] != ''
 		&& preg_match('/'.$_POST['name'].'/i', $applicant['given_name'] . $applicant['middle_name'] . $applicant['family_name']) === 0 ) continue;
 	$color = $color == 'light'? 'dark' : 'light';		
+
 	$count++;
 
 	//If over SEARCH_LIMIT stop displaying
@@ -170,7 +171,16 @@ foreach($applicants as $applicant) {
 							}
 		?>		
 		</td>
-
+		<td><?php 
+			if($applicant['application_process_status'] == '') {
+				echo "Processing";
+			} else if($applicant['application_process_status'] == 'T') {
+				echo "Success";
+			} else if($applicant['application_process_status']) == 'F') {
+				echo "Failure";
+			}
+		?>	
+		</td>
 	</tr>
 
 <?php } 
