@@ -40,6 +40,7 @@ $completed_pdf_directory = "/Library/WebServer/Documents/grad_application/pdf_ex
 $completed_essay_directory = "/Library/WebServer/Documents/grad_application/essays/";
 $completed_resume_directory = "/Library/WEbServer/Documents/grad_application/essays/";
 $completed_lor_directory = "/Library/WebServer/Documents/grad_application/recommendations/";
+$csv_directory = "/Library/WebServer/Documents/grad_systeminterface/csv/";
 //////////////////////////
 // Application Settings //
 //////////////////////////

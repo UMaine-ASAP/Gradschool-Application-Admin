@@ -151,7 +151,7 @@ $('#limit-search-results').click( function() {
 
 //Output CSV to screen
 if($_GET['mode'] == 'csv') {
-	$fp = fopen('file.csv', 'w');
+	$fp = fopen( $GLOBALS['csv_directory'] . 'recommender.csv', 'w');
 
 	foreach ($csv_data as $fields) {
     	fputcsv($fp, $fields);
@@ -163,7 +163,7 @@ if($_GET['mode'] == 'csv') {
 	//open/save dialog box
 	header('Content-Disposition: attachment; filename="recommender.csv"');
 	//read from server and write to buffer
-	readfile('file.csv');
+	readfile( $GLOBALS['csv_directory'] . 'recommender.csv');
 }
 	
 } else {//end check ses vars
