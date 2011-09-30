@@ -43,6 +43,7 @@ sort_array($all_references, 'applicant_id', "DESC", 'numeric');
 $curr_id = -1;
 $color = 'light';
 $count = 0;
+$csv_data = Array();
 
 foreach($all_references as $reference) {
 	
@@ -95,30 +96,29 @@ foreach($all_references as $reference) {
 	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
 		break;
 	}
-		
+	
+	//Build output data
+	$output_data = Array();
+	$output_data[] = ($reference['reference_filename']) ? "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$date</a>" : "";
+	$output_data[] = $reference['applicant_id'];
+	$output_data[] = $applicant_name;
+	$output_data[] = $reference['reference_first'] . " " . $reference['reference_last'];
+	$email = $reference['reference_email'];
+	$output_data[] = "<a href='mailto:$email'>$email</a>";
+	if( !isset($_GET['mode']) ) {
+		// Web Mode
 ?>
-
 	<tr class='<?php echo $color;?>' id='reference_data'>
-		<td><?php 
-			if ($reference['reference_filename']) {
-				echo "<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$date</a>";
-			}
-		?></td>
-		
-		<td><?php echo $reference['applicant_id']; ?></td>
-		<td><?php echo $applicant_name; ?></td>
-
-		<td><?php echo $reference['reference_first'] . " " . $reference['reference_last']  ?></td>
-		
-		<td>
-			<?php 
-				$email = $reference['reference_email'];				
-				echo "<a href='mailto:$email'>$email</a>";				
-			?>
-		</td>		
+		<?php 
+			foreach($output_data as $item) {
+				echo "<td>$item</td>";
+		?>
 	</tr>
 
 <?php 
+	} else if($_GET['mode'] == 'csv') {
+	}//end mode processing
+
 }//end loop processing
 ?>
 
