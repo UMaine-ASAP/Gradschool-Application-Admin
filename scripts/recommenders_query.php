@@ -112,6 +112,7 @@ foreach($all_references as $reference) {
 		<?php 
 			foreach($output_data as $item) {
 				echo "<td>$item</td>";
+			}
 		?>
 	</tr>
 
