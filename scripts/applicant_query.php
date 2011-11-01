@@ -30,7 +30,8 @@ function get_academic_name($academic_code) {
 }
 
 //build query
-$qry = "SELECT * FROM applicants WHERE 1=1 "; //use dummy value so WHERE is in starting statement -- Tim 3/12/11
+$qry = "SELECT a.applicant_id as applicant_id, a.application_payment_method as application_payment_method, a.has_been_submitted as has_been_submitted, a.date_of_birth as date_of_birth, a.family_name as family_name, a.given_name as given_name, p.academic_program as academic_program, a.application_submit_date as application_submit_date, p.start_semester as start_semester, p.start_year as start_year, a.application_fee_payment_status as application_fee_payment_status, p.student_type as student_type, p.attendance_load as attendance_load, a.email as email, a.essay_file_name as essay_file_name, a.resume_file_name as resume_file_name FROM applicants a, appliedPrograms p WHERE a.applicant_id = p.applicant_id ";
+
 
 /////completed/////
 if(checkValue($_POST['has_been_submitted'])) {
@@ -43,6 +44,7 @@ if(checkValue($_POST['has_been_submitted'])) {
 			break;
 	}
 }
+
 
 
 /////Program/////
@@ -71,8 +73,6 @@ if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 }
 
 
-
-
 $color = 'light';
 $count = 0;
 
@@ -90,7 +90,7 @@ foreach($applicants as $applicant) {
 	
 	if( filter_set($applicant, 	  'direct', 	Array('application_fee_payment_status'))
 		|| filter_set($applicant, 'contained', Array('email', 'applicant_id'))
-		|| filter_set($applicant, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
+		|| filter_set($appliedProgram, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
 		|| $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
 		) continue;
 		
@@ -137,12 +137,12 @@ foreach($applicants as $applicant) {
 		</td>
 
 		<!-- academic info -->
-		<td><?php echo $applicant['academic_program'] . ' ' . get_academic_name($applicant['academic_program']); ?></td>
+		<td><?php echo $applicant['academic_program'] . ' ' . get_academic_name($appliedProgram['academic_program']); ?></td>
 		<td><?php echo $applicant['application_submit_date'] ?></td>
 		<td><?php echo $applicant['start_semester'] ?></td>
 		<td><?php echo $applicant['start_year'] ?></td>
 		
-		<td><?php echo $applicant['application_fee_payment_status'] ?></td>
+		<td><?php echo ($applicant['application_fee_payment_status'] == 'Y') ? "yes" : "no"; ?></td>
 		<td><?php echo $applicant['student_type'] ?></td>
 		<td><?php echo $applicant['attendance_load'] ?></td>
 		<td>

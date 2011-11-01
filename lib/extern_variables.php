@@ -6,9 +6,9 @@
 error_reporting(0);
 
 //Database User
-$db_user = "";
+$db_user = "grad_systemI";
 //Database Password
-$db_pass = "";
+$db_pass = "TnzSnZ9zaX8p8fqG";
 //Database Host
 $db_host = "localhost";
 //Database Table
@@ -39,6 +39,6 @@ $completed_lor_directory = "/Library/WebServer/Documents/grad_application/recomm
 // Application Settings //
 //////////////////////////
 
-$SEARCH_LIMIT = 30;
+$SEARCH_LIMIT = 20;
 
 ?>

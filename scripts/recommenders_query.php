@@ -17,27 +17,20 @@ $db = Database::get();
 
 function insertQueryString(&$str, $field, $var = '') {
 	if($var != '') {
-		$str .= ' AND $field = $var';
+		$str .= ' AND $field = $var'; 
 	}
 }
 
 function checkValue($v) { return isset($v) && $v != '';}
 
 //Get reference information
-$references1 = $db->query("SELECT applicant_id, reference1_filename as reference_filename, reference1_first as reference_first, reference1_last as reference_last, reference1_email as reference_email  FROM applicants");
-$references2 = $db->query("SELECT applicant_id, reference2_filename as reference_filename, reference2_first as reference_first, reference2_last as reference_last, reference2_email as reference_email  FROM applicants");
-$references3 = $db->query("SELECT applicant_id, reference3_filename as reference_filename, reference3_first as reference_first, reference3_last as reference_last, reference3_email as reference_email  FROM applicants");
-$referencesX = $db->query("SELECT applicant_id, reference_filename,						   reference_first,					 reference_last,					reference_email,					 FROM extrareferences");
+$qry = "SELECT * FROM  `applicant_references`  ";
+if( 'sort_by') {
+	$qry .= " ORDER BY applicant_id DESC ";
+}
 
-$all_references = array_merge($references1, $references2, $references3, $referencesX);
-
-
-
-if( 'sort_by' )
-//sort_array($all_references, $_POST['sort_by'], $_POST['sort_type']);
-sort_array($all_references, 'applicant_id', "DESC", 'numeric');
-
-
+$all_references = $db->query( $qry );
+print_r($all_references);
 //Order by
 
 $curr_id = -1;
@@ -45,13 +38,7 @@ $color = 'light';
 $count = 0;
 $csv_data = Array();
 
-foreach($all_references as $reference) {
-	
-	//toogle colors based on user
-	if($curr_id != $reference['applicant_id']) {
-		$color = $reference['applicant_id']%2 == 0 ? 'dark' : 'light';
-	}
-	
+foreach($all_references as $reference) {	
 	$curr_id = $reference['applicant_id'];
 	
 	// Construct Applicant Name
@@ -95,6 +82,11 @@ foreach($all_references as $reference) {
 	//If over SEARCH_LIMIT stop displaying
 	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
 		break;
+	}
+
+	//toogle colors based on user
+	if($curr_id != $reference['applicant_id']) {
+		$color = ($color == 'light') ? 'dark' : 'light';
 	}
 	
 	//Build output data
