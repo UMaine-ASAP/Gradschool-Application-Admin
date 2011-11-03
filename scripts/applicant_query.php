@@ -3,24 +3,16 @@
 //3/12/2011
 //This script queries the user table based on POST filter values
 
-
-
 include_once '../lib/variables.php';
 include_once '../lib/database.php';
 include_once '../lib/core.php';
+include_once '../lib/pagination.php';
 
 //make sure user is valid
-if(check_ses_vars() != '') {
-	
-$db = Database::get();
-
-function insertQueryString(&$str, $field, $var = '') {
-	if($var != '') {
-		$str .= ' AND $field = $var';
-	}
+if(check_ses_vars() == '')  {
+	echo "login";
+	exit();
 }
-
-function checkValue($v) { return isset($v) && $v != '';}
 
 function get_academic_name($academic_code) {
 	$db = Database::get();
@@ -29,93 +21,65 @@ function get_academic_name($academic_code) {
 	return $name[0];
 }
 
-//build query
-$qry = "SELECT a.applicant_id as applicant_id, a.application_payment_method as application_payment_method, a.has_been_submitted as has_been_submitted, a.date_of_birth as date_of_birth, a.family_name as family_name, a.given_name as given_name, p.academic_program as academic_program, a.application_submit_date as application_submit_date, p.start_semester as start_semester, p.start_year as start_year, a.application_fee_payment_status as application_fee_payment_status, p.student_type as student_type, p.attendance_load as attendance_load, a.email as email, a.essay_file_name as essay_file_name, a.resume_file_name as resume_file_name FROM applicants a, appliedPrograms p WHERE a.applicant_id = p.applicant_id ";
+// ====== //
+// Build Query
 
+$db = Database::get();
 
-/////completed/////
+$query = "SELECT * FROM applicant_academic WHERE 1 "; //Add dummy value
+$query_cond = "";
+
+//Filters
 if(checkValue($_POST['has_been_submitted'])) {
 	switch($_POST['has_been_submitted']) {
 		case 'yes':
-			$qry .= " AND has_been_submitted = 1";
+			$query .= " AND has_been_submitted = 1";
 			break;
 		case 'no':
-			$qry .= " AND has_been_submitted = 0";
+			$query .= " AND has_been_submitted = 0";
 			break;
 	}
 }
 
+$query_cond .= buildQuery('direct', "application_payment_method");
+$query_cond .= buildQuery('direct', "application_fee_payment_status");
+$query_cond .= buildQuery('direct', "student_type");
+$query_cond .= buildQuery('direct', "start_semester");
+$query_cond .= buildQuery('direct', "start_year");
+$query_cond .= buildQuery('direct', "attendance_load");
+$query_cond .= buildQuery('direct', "academic_program");
+$query_cond .= buildQuery('contained', "applicant_name");
+$query_cond .= buildQuery('contained', "email");
+$query_cond .= buildQuery('contained', "applicant_id");
 
-
-/////Program/////
-if(checkValue($_POST['program'])) {
-
+//Deal with date
+if( $_POST['application_submit_date-from'] != '' && $_POST['application_submit_date-to'] != '') {
+	$query_cond .= "AND application_submit_date >= '" . $_POST['application_submit_date-from'] . "' AND application_submit_date < '" . $_POST['application_submit_date-to'] . "'";
 }
 
-$applicants = $db->query($qry);
-
-//merge academic data
-//foreach($applicants as &$applicant) {
-//	$result	= $db->query("SELECT * FROM appliedprograms WHERE applicant_id = %i", $applicant['applicant_id']);
-//	$academics = $result[0];
-	//$applicant = array_merge($applicant, $academics);	
-//}
-
-
-/* =========== */
-// Sort Data
-//$_POST['sortby'] = 'application_submit_date';
-//$_POST['sort_type'] = 'ASCD';
+//Order Data
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
-	sort_array_by_date($applicants, "application_submit_date", "ASCD");
+	$query_cond .= " ORDER BY application_submit_date DESC ";
 } else {
-	sort_array($applicants, $_POST['sort_by'], $_POST['sort_type']);
+	$query_cond .= " ORDER BY " . $_POST['sort_by'] . " " . $_POST['sort_type'];
 }
 
+//limit display and deal with pages
+$page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
+$limit = 20;
+$startpoint = ($page * $limit) - $limit;
+
+$query_limit = " LIMIT $startpoint, $limit ";
+
+
+//print "<tr><td>$query $query_cond</td></tr>";
+
+$applicants = $db->query($query . $query_cond . $query_limit);
 
 $color = 'light';
-$count = 0;
 
-foreach($applicants as $applicant) { 
-
-	$applicant_name = '';
-	if($applicant['given_name'] != '') {
-		$applicant_name .= $applicant['given_name'] . " ";
-	}
-	if($applicant['middle_name'] != '') {
-		$applicant_name .= $applicant['middle_name'] . " ";
-	}
-	$applicant_name .= $applicant['family_name'];
-	
-	
-	if( filter_set($applicant, 	  'direct', 	Array('application_fee_payment_status'))
-		|| filter_set($applicant, 'contained', Array('email', 'applicant_id'))
-		|| filter_set($appliedProgram, 'direct', 	Array('student_type', 'start_semester', 'start_year', 'attendance_load', 'academic_program')) //academic fields		
-		|| $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
-		) continue;
-		
-	//check date
-	
-	if( 
-		!check_in_range( $_POST['application_submit_date-from'], $_POST['application_submit_date-to'], $applicant['application_submit_date'] ) 
-		&& $_POST['application_submit_date-to']		!=''
-		&& $_POST['application_submit_date-from']	!=''
-		){
-		continue;
-	}
-		
-	//check name
-	if( $_POST['name'] != ''
-		&& preg_match('/'.$_POST['name'].'/i', $applicant['given_name'] . $applicant['middle_name'] . $applicant['family_name']) === 0 ) continue;
-	$color = $color == 'light'? 'dark' : 'light';		
-	
-	$count++;
-
-	//If over SEARCH_LIMIT stop displaying
-	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
-		break;
-	}
-
+foreach($applicants as $applicant) { 		
+	$color = $color == 'light'? 'dark' : 'light';
 ?>
 
 	<tr class='<?php echo $color;?>' id='applicant_data'>
@@ -129,9 +93,9 @@ foreach($applicants as $applicant) {
 				$exDOB = explode("/", $applicant['date_of_birth']);
 				$newDOB = $exDOB[0].$exDOB[1].$exDOB[2];
 				$pdftitle = $applicant['applicant_id']."_".$applicant['family_name']."_".$applicant['given_name']."_".$newDOB.".pdf";
-				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant_name . "</a>";
+				echo "<a href='getFile.php?FileName=" . $pdftitle . "&FileType=application' target='_blank'>" . $applicant['applicant_name'] . "</a>";
 			} else {
-				echo $applicant_name;
+				echo $applicant['applicant_name'];
 			}		
  			?> 				
 		</td>
@@ -187,19 +151,6 @@ $('#limit-search-results').click( function() {
 
 </script>
 <?php
-if($_POST['limit'] == -1) {
-	$count_statement = "Displaying all $count results! <div><a id='limit-search-results' href='#'>Limit to $SEARCH_LIMIT Results</a></div>";
-} else if($count > $_POST['limit'] && $_POST['limit'] > 0) {
-	$count = $count - 1;
-	$count_statement = "Over $count Results Found!<div><a id='display-all-results' href='#'>Display all results</a></div>";
-} else if($count == 1) {
-	$count_statement = "One Result Found!";
-} else {
-	$count_statement = "$count Results Found!";
-}
-	echo '**&&%%&&**' . $count_statement;
+	echo '**&&%%&&**' . pagination(" `applicant_academic` WHERE 1 " . $query_cond, 20, $_POST['page']);
 
-} else {//end check ses vars
-	echo "login";
-}
 ?>	

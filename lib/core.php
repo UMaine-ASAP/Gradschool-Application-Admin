@@ -80,7 +80,6 @@ function filter_set(&$src, $type, $fields) {
 	return $result;
 }
 
-
 function filter(&$src, $type, $field) {
 	if($_POST[$field] == '-') return false;
 	
@@ -143,6 +142,27 @@ function sort_array_by_date(&$array_to_sort, $date_field, $order) {
 	usort($array_to_sort, $compare_func);
 }
 
+function buildQuery($type, $field) {
+	if($_POST[$field] == '-') return "";	
+	switch($type) {
+	case 'direct':
+		//if($_POST[$field] == '' );// $_POST[$field] = 'blank';
+
+		if(isset($_POST[$field]) && $_POST[$field] != '') {
+			return " AND $field = '" . $_POST[$field] . "'";
+		}
+		break;
+	case 'contained':
+		if($_POST[$field] != '') {
+			return " AND LOWER($field) LIKE LOWER('%" . $_POST[$field] . "%')";
+		}
+		break;
+
+	}
+}
+
+function checkValue($v) { return isset($v) && $v != '';}
+
 function createDataTableHTML($name, $fields, $query_script, $limit) {
 
 /* Javascript Code */
@@ -172,18 +192,19 @@ function update() {
 		var id 			= $(this).attr('id');
 		var index 		= id.indexOf('-');
 		var fieldname 	= id.substr(index+1);
-		
 		//after first pass add &
 		if(send_data != '')
 			send_data += '&';
 			
 		send_data += fieldname + "=" + $(this).val();
 	});
+	var page = $('.pagination .selected a').html() || 1;
+			
 	send_data += '&sort_by=' + sort_by + '&sort_type=' + sort_type;
 	$.ajax({
 		url: '<?php echo $query_script;?>',
 		type:'POST',
-		data: send_data + '&limit=' + <?php echo $limit;?>,
+		data: send_data + '&page=' + page,
 		success: function(data){
 			//update result number
 			results = data.split('**&&%%&&**');
@@ -219,7 +240,7 @@ $('.sort').click( function () {
 		if(icon.hasClass('ui-icon-triangle-1-s')) {
 			icon.removeClass('ui-icon-triangle-1-s');
 			icon.addClass('ui-icon, ui-icon-triangle-1-n');	
-			sort_type = 'ASCD';
+			sort_type = 'ASC';
 		} else {
 			icon.removeClass('ui-icon-triangle-1-n');			
 			icon.addClass('ui-icon-triangle-1-s');	
@@ -233,21 +254,13 @@ $('.sort').click( function () {
 });
 
 $('.filter').keyup( function () {
-	wait(40);
-	update();
+//	wait(40);
+//	update();
 });
 update(); //initial data
 
 </script>
 
-
-
-
-<?php
-/* Result Count */
-?>
-
-<div><span id='result-count'></span></div>
 <?php
 /* ======================== */
 // Table header
@@ -268,7 +281,7 @@ foreach($fields as $field) { ?>
 	<?php 
 	if($field[2] == 'text') { 
 	?>
-		<input class='filter' type='text' id='selected-<?php echo $field[1];?>'>
+		<input class='filter' type='text' onchange='update()' id='selected-<?php echo $field[1];?>'>
 	<?php 
 	} else if($field[2] == 'select') { 
 	?>
@@ -340,6 +353,11 @@ foreach($fields as $field) { ?>
 </thead>
 	<tbody id='resulting_data'></tbody>
 </table>
+<?php
+/* Result Count */
+?>
+
+<div><span id='result-count'></span></div>
 
 <?php } //end of function createDataTableHTML
 

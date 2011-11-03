@@ -5,15 +5,14 @@ include_once '../lib/core.php';
 
 
 //make sure user is valid
-if(check_ses_vars() != '') {
+if(check_ses_vars() == '')  {
+	echo "login";
+	exit();
+}
 
 
 $db = Database::get();
-$applicants = $db->query("SELECT * FROM applicants ORDER BY application_submit_date");
 
-//$programs = $db->query("SELECT * FROM um_academic");
-//foreach($programs as $program) {
-//$name = $program['academic_dept_heading'] . " " . $program['academic_degree'];
 $result = $db->query("SELECT DISTINCT academic_program, academic_dept_heading, academic_degree FROM um_academic ORDER BY academic_program");
 $academic_programs = array('-'=>'-', ''=>'');
 foreach($result as $r) {
@@ -59,8 +58,4 @@ $fields = array(
 
 createDataTableHTML('Applicants', $fields, "scripts/applicant_query.php", $_POST['limit']);
 
-
-} else {
-	echo 'login';
-}
 ?>

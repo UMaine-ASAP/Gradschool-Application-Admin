@@ -6,96 +6,78 @@
 include_once '../lib/variables.php';
 include_once '../lib/database.php';
 include_once '../lib/core.php';
+include_once '../lib/pagination.php';
 
 //make sure user is valid
-if(check_ses_vars() != '') {
+if(check_ses_vars() == '')  {
+	echo "login";
+	exit();
+}
 
 
 
+// ====== //
+// Build Query
 $db = Database::get();
 
-
-function insertQueryString(&$str, $field, $var = '') {
-	if($var != '') {
-		$str .= ' AND $field = $var'; 
-	}
-}
-
-function checkValue($v) { return isset($v) && $v != '';}
-
 //Get reference information
-$qry = "SELECT * FROM  `applicant_references`  ";
-if( 'sort_by') {
-	$qry .= " ORDER BY applicant_id DESC ";
+$query = "SELECT * FROM  `applicant_references`  WHERE 1 ";
+$query_cond = "";
+
+// Filters
+$query_cond .= buildQuery('direct', "application_payment_method");
+$query_cond .= buildQuery('contained', "reference_name");
+$query_cond .= buildQuery('contained', "applicant_name");
+$query_cond .= buildQuery('contained', "reference_email");
+$query_cond .= buildQuery('contained', "applicant_id");
+
+
+//Deal with date
+if( $_POST['recommender_submit_date-from'] != '' && $_POST['recommender_submit_date-to'] != '') {
+	$query_cond .= "AND DATE(recommendation_submission_date) >= DATE('" . $_POST['recommender_submit_date-from'] . "') AND DATE(recommendation_submission_date) < DATE('" . $_POST['recommender_submit_date-to'] . "')";
 }
 
-$all_references = $db->query( $qry );
-print_r($all_references);
-//Order by
+$query_cond .= " AND (reference_name != '' OR reference_email != '')";
+
+//Order Data
+if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
+	$query_cond .= " ORDER BY applicant_id ASC ";
+} else {
+	$query_cond .= " ORDER BY " . $_POST['sort_by'] . " " . $_POST['sort_type'];
+}
+
+//limit display and deal with pages
+$page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
+$limit = 20;
+$startpoint = ($page * $limit) - $limit;
+
+$query_limit = " LIMIT $startpoint, $limit ";
+
+
+$all_references = $db->query( $query . $query_cond . $query_limit );
+
+//print "<tr><td>$query $query_cond</td></tr>";
 
 $curr_id = -1;
 $color = 'light';
-$count = 0;
-$csv_data = Array();
 
-foreach($all_references as $reference) {	
-	$curr_id = $reference['applicant_id'];
+foreach($all_references as $applicant_reference) {	
+	if($curr_id == -1)
+		$curr_id = $applicant_reference['applicant_id'];	
 	
-	// Construct Applicant Name
-	$applicant = $db->query("SELECT * FROM applicants WHERE applicant_id = " . $reference['applicant_id']);
-	$applicant = $applicant[0];
-	$applicant_name = '';
-	if($applicant['given_name'] != '') {
-		$applicant_name .= $applicant['given_name'] . " ";
-	}
-	if($applicant['middle_name'] != '') {
-		$applicant_name .= $applicant['middle_name'] . " ";
-	}
-	$applicant_name .= $applicant['family_name'];
-	
-	
-	//=== Filters ===
-	if( filter_set($reference, 'contained', 	Array('reference_email', 'applicant_id'))
-		 || $_POST['reference_name'] != '' && preg_match('/'.$_POST['reference_name'].'/i', $reference['reference_first'] . " " . $reference['reference_last']) === 0
-		 || $_POST['applicant_name'] != '' && preg_match('/'.$_POST['applicant_name'].'/i', $applicant_name) === 0
-		 ) continue;
-
-	//check date
-	$date = $reference['reference_filename'] ? current(explode('.', end(explode('_', $reference['reference_filename'])))) : "";  //Format is UMGradRec_2_BakerTim_09-25-2011.pdf
-	if($date != "") {
-		$items = explode('-', $date);
-		$date = $items[2] . "-" . $items[0] . "-" . $items[1];
-	}
-	if( 
-		!check_in_range( $_POST['recommender_submit_date-from'], $_POST['recommender_submit_date-to'], $date ) 
-		&& $_POST['recommender_submit_date-to']		!=''
-		&& $_POST['recommender_submit_date-from']	!=''
-		){
-		continue;
-	}
-		 		 
-	// Check for blank reference
-	if( $reference['reference_email'] == "" && $reference['reference_last'] == "" && $reference['reference_first'] == "")
-		continue;
-		
-	$count++;
-	//If over SEARCH_LIMIT stop displaying
-	if($count > $_POST['limit'] && $_POST['limit'] > 0) {
-		break;
-	}
-
 	//toogle colors based on user
-	if($curr_id != $reference['applicant_id']) {
+	if($curr_id != $applicant_reference['applicant_id']) {
 		$color = ($color == 'light') ? 'dark' : 'light';
+		$curr_id = $applicant_reference['applicant_id'];
 	}
 	
 	//Build output data
 	$output_data = Array();
-	$output_data[] = ($reference['reference_filename']) ? $date : "";
-	$output_data[] = $reference['applicant_id'];
-	$output_data[] = $applicant_name;
-	$output_data[] = $reference['reference_first'] . " " . $reference['reference_last'];
-	$email = $reference['reference_email'];
+	$output_data[] = ($applicant_reference['recommendation_submission_date'] != "0000-00-00") ? $applicant_reference['recommendation_submission_date'] : "";
+	$output_data[] = $applicant_reference['applicant_id'];
+	$output_data[] = $applicant_reference['applicant_name'];
+	$output_data[] = $applicant_reference['reference_name'];
+	$email = $applicant_reference['reference_email'];
 	$output_data[] = $email;
 
 	// Web Mode
@@ -106,7 +88,7 @@ foreach($all_references as $reference) {
 			foreach($output_data as $item) {
 				if($ct == 0) {
 					echo "<td>
-							<a href='getFile.php?FileName=" . $reference['reference_filename'] . "&FileType=LOR' target='_blank'>$item</a>
+							<a href='getFile.php?FileName=" . $applicant_reference['reference_filename'] . "&FileType=LOR' target='_blank'>$item</a>
 						</td>";
 					;
 				} else if($ct == 4) {
@@ -138,20 +120,7 @@ $('#limit-search-results').click( function() {
 
 </script>
 <?php
-	if($_POST['limit'] == -1) {
-		$count_statement = "Displaying all $count results! <div><a id='limit-search-results' href='#'>Limit to $SEARCH_LIMIT Results</a></div>";
-	} else if($count > $_POST['limit'] && $_POST['limit'] > 0) {
-		$count = $count - 1;
-		$count_statement = "Over $count Results Found!<div><a id='display-all-results' href='#'>Display all results</a></div>";
-	} else if($count == 1) {
-		$count_statement = "One Result Found!";
-	} else {
-		$count_statement = "$count Results Found!";
-	}
-	echo '**&&%%&&**' . $count_statement;
+	echo '**&&%%&&**' . pagination(" `applicant_references` WHERE 1 " . $query_cond, 20, $_POST['page']);
 
-	
-} else {//end check ses vars
-	echo "login";
-}
+
 ?>
