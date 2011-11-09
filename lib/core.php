@@ -143,18 +143,21 @@ function sort_array_by_date(&$array_to_sort, $date_field, $order) {
 }
 
 function buildQuery($type, $field) {
-	if($_POST[$field] == '-') return "";	
+	$value = mysql_real_escape_string( $_POST[$field] );
+	$field = mysql_real_escape_string( $field );
+
+	if($value == '-') return "";	
 	switch($type) {
 	case 'direct':
 		//if($_POST[$field] == '' );// $_POST[$field] = 'blank';
 
-		if(isset($_POST[$field]) && $_POST[$field] != '') {
-			return " AND $field = '" . $_POST[$field] . "'";
+		if(isset($value) && $value != '') {
+			return " AND $field = '$value'";
 		}
 		break;
 	case 'contained':
-		if($_POST[$field] != '') {
-			return " AND LOWER($field) LIKE LOWER('%" . $_POST[$field] . "%')";
+		if($value != '') {
+			return " AND LOWER($field) LIKE LOWER('%$value%')";
 		}
 		break;
 
@@ -374,6 +377,8 @@ function strip_numeric_indexes(&$a) {
 
 
 function getDistinct($field, $table) {
+	$field = mysql_real_escape_string($field);
+	$table = mysql_real_escape_string($table);
 	$db = new Database();
 	$db->connect();
 	$qry_string = "SELECT DISTINCT " . $field . " FROM " . $table;

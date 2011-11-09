@@ -14,7 +14,6 @@ $academic_dept_code 	= 	getDistinct('academic_dept_code', 'um_academic');
 $academic_dept_heading 	= 	getDistinct('academic_dept', 'um_academic');
 $academic_degree		= 	getDistinct('academic_degree', 'um_academic');
 
-
 $fields = array(
 	array('Active', 'active', 'select', array('-', 'yes','no')),
 	array('Academic Program', 	'academic_program', 	'text'),//'select', $academic_programs),
@@ -29,7 +28,7 @@ $fields = array(
 	array('NEBHE VT', 		'nebhe_vt', 	'select', array('-','', 'X'))
 );
 
-createDataTableHTML('Programs', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/programs_query.php", $_POST['limit']);
+createDataTableHTML('Programs', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/programs_query.php", $_POST['page']);
 
 
 include 'add_info.php';

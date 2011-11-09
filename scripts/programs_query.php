@@ -19,7 +19,6 @@ function insertQueryString(&$str, $field, $var = '') {
 	}
 }
 
-function checkValue($v) { return isset($v) && $v != '';}
 
 //build query
 $qry = "SELECT academic_index, active, academic_program, academic_dept_code, academic_dept, academic_degree, nebhe_ct, nebhe_ma, nebhe_nh, nebhe_ri, nebhe_vt FROM um_academic";

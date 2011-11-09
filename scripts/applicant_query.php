@@ -17,7 +17,7 @@ if(check_ses_vars() == '')  {
 function get_academic_name($academic_code) {
 	$db = Database::get();
 
-	$name = $db->query("SELECT academic_dept_heading FROM um_academic WHERE academic_program = " . $academic_code);
+	$name = $db->query("SELECT academic_dept_heading FROM um_academic WHERE academic_program = %s", $academic_code);
 	return $name[0];
 }
 
@@ -33,10 +33,10 @@ $query_cond = "";
 if(checkValue($_POST['has_been_submitted'])) {
 	switch($_POST['has_been_submitted']) {
 		case 'yes':
-			$query .= " AND has_been_submitted = 1";
+			$query_cond .= " AND has_been_submitted = 1";
 			break;
 		case 'no':
-			$query .= " AND has_been_submitted = 0";
+			$query_cond .= " AND has_been_submitted = 0";
 			break;
 	}
 }
@@ -54,20 +54,24 @@ $query_cond .= buildQuery('contained', "applicant_id");
 
 //Deal with date
 if( $_POST['application_submit_date-from'] != '' && $_POST['application_submit_date-to'] != '') {
-	$query_cond .= "AND application_submit_date >= '" . $_POST['application_submit_date-from'] . "' AND application_submit_date < '" . $_POST['application_submit_date-to'] . "'";
+	$date_from = mysql_real_escape_string($_POST['application_submit_date-from']);
+	$date_to   = mysql_real_escape_string($_POST['application_submit_date-to']);	
+	$query_cond .= "AND application_submit_date >= '$date_from' AND application_submit_date < '$date_to'";
 }
 
 //Order Data
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 	$query_cond .= " ORDER BY application_submit_date DESC ";
 } else {
-	$query_cond .= " ORDER BY " . $_POST['sort_by'] . " " . $_POST['sort_type'];
+	$sort_by   = mysql_real_escape_string($_POST['sort_by']);
+	$sort_type = mysql_real_escape_string($_POST['sort_type']);	
+	$query_cond .= " ORDER BY $sort_by $sort_type";
 }
 
 //limit display and deal with pages
 $page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
 $limit = 20;
-$startpoint = ($page * $limit) - $limit;
+$startpoint = mysql_real_escape_string( ($page * $limit) - $limit );
 
 $query_limit = " LIMIT $startpoint, $limit ";
 

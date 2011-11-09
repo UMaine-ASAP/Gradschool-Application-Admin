@@ -34,7 +34,9 @@ $query_cond .= buildQuery('contained', "applicant_id");
 
 //Deal with date
 if( $_POST['recommender_submit_date-from'] != '' && $_POST['recommender_submit_date-to'] != '') {
-	$query_cond .= "AND DATE(recommendation_submission_date) >= DATE('" . $_POST['recommender_submit_date-from'] . "') AND DATE(recommendation_submission_date) < DATE('" . $_POST['recommender_submit_date-to'] . "')";
+	$date_from = mysql_real_escape_string($_POST['recommender_submit_date-from']);
+	$date_to   = mysql_real_escape_string($_POST['recommender_submit_date-to']);
+	$query_cond .= "AND DATE(recommendation_submission_date) >= DATE('$date_from') AND DATE(recommendation_submission_date) < DATE('$date_to')";
 }
 
 $query_cond .= " AND (reference_name != '' OR reference_email != '')";
@@ -43,13 +45,15 @@ $query_cond .= " AND (reference_name != '' OR reference_email != '')";
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 	$query_cond .= " ORDER BY applicant_id ASC ";
 } else {
-	$query_cond .= " ORDER BY " . $_POST['sort_by'] . " " . $_POST['sort_type'];
+	$sort_by   = mysql_real_escape_string($_POST['sort_by']);
+	$sort_type = mysql_real_escape_string($_POST['sort_type']);	
+	$query_cond .= " ORDER BY $sort_by $sort_type";
 }
 
 //limit display and deal with pages
 $page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
 $limit = 20;
-$startpoint = ($page * $limit) - $limit;
+$startpoint = mysql_real_escape_string(  ($page * $limit) - $limit  );
 
 $query_limit = " LIMIT $startpoint, $limit ";
 
