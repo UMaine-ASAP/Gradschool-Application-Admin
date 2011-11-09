@@ -54,7 +54,7 @@ function verifyUser() {
 
 function getUserName($id) {
 	$db = Database::get();
-	$applicants = $db->query("SELECT * FROM admin WHERE id = " . $id);
+	$applicants = $db->query("SELECT * FROM admin WHERE id = %i", $id);
 	return $applicants[0]['username'];
 }
 
@@ -381,7 +381,7 @@ function getDistinct($field, $table) {
 	$table = mysql_real_escape_string($table);
 	$db = new Database();
 	$db->connect();
-	$qry_string = "SELECT DISTINCT " . $field . " FROM " . $table;
+	$qry_string = "SELECT DISTINCT `" . $field . "` FROM `" . $table . "`";
 	$qry = $db->query($qry_string);
 	$result = array('-', '');
 	foreach($qry as $q) {
