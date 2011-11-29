@@ -71,7 +71,7 @@ if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 //limit display and deal with pages
 $page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
 $limit = 20;
-$startpoint = mysql_real_escape_string( ($page * $limit) - $limit );
+$startpoint =  ($page * $limit) - $limit ;
 
 $query_limit = " LIMIT $startpoint, $limit ";
 

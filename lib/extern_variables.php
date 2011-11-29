@@ -6,9 +6,9 @@
 error_reporting(0);
 
 //Database User
-$db_user = "grad_systemI";
+$db_user = "root";
 //Database Password
-$db_pass = "TnzSnZ9zaX8p8fqG";
+$db_pass = "asap4u2u";
 //Database Host
 $db_host = "localhost";
 //Database Table
@@ -25,7 +25,7 @@ $db_name = "grad5app";
 // Website Settings //
 //////////////////////
 
-$SERVER_ROOT = "http://hoonah.asap.um.maine.edu/";
+$SERVER_ROOT = "http://mcp.asap.um.maine.edu/";
 $APPMANAGER_ROOT = $SERVER_ROOT . "grad_systeminterface/";
 
 //Session timeout in seconds
