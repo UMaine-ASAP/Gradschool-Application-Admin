@@ -393,7 +393,7 @@ function getDistinct($field, $table) {
 
 
 ////////////////////////////////
-  function mime_content_type($filename) {
+  function get_mime_content_type($filename) {
 
         $mime_types = array(
 

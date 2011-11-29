@@ -1,5 +1,5 @@
 <?php 
-include 'lib/variables.php';
+include_once 'lib/variables.php';
 ?>
 <html>
 <head>

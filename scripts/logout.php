@@ -1,8 +1,8 @@
 <?php
 
-include '../lib/variables.php';
-include '../lib/database.php';
-include '../lib/core.php';
+include_once '../lib/variables.php';
+include_once '../lib/database.php';
+include_once '../lib/core.php';
 
 //make sure user is valid
 if(check_ses_vars() != '') {

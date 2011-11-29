@@ -102,7 +102,7 @@ if(check_ses_vars() != '') {
 
 	// Build Content-Type
 
-	header("Content-Type:" . mime_content_type($_GET['FileName']) );
+	header("Content-Type:" . get_mime_content_type($_GET['FileName']) );
 
 	
 
@@ -112,11 +112,15 @@ if(check_ses_vars() != '') {
 
 
 
+} else {
+
+echo "Invalid Session";
+	
 }
 
 
 
-echo "Invalid Session";
+
 
 ?>
 
