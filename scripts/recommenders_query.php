@@ -25,17 +25,17 @@ $query = "SELECT * FROM  `applicant_references`  WHERE 1 ";
 $query_cond = "";
 
 // Filters
-$query_cond .= buildQuery('direct', "application_payment_method");
-$query_cond .= buildQuery('contained', "reference_name");
-$query_cond .= buildQuery('contained', "applicant_name");
-$query_cond .= buildQuery('contained', "reference_email");
-$query_cond .= buildQuery('contained', "applicant_id");
+$query_cond .= buildQuery('direct', "application_payment_method", $db);
+$query_cond .= buildQuery('contained', "reference_name", $db);
+$query_cond .= buildQuery('contained', "applicant_name", $db);
+$query_cond .= buildQuery('contained', "reference_email", $db);
+$query_cond .= buildQuery('contained', "applicant_id", $db);
 
 
 //Deal with date
 if( $_POST['recommender_submit_date-from'] != '' && $_POST['recommender_submit_date-to'] != '') {
-	$date_from = mysql_real_escape_string($_POST['recommender_submit_date-from']);
-	$date_to   = mysql_real_escape_string($_POST['recommender_submit_date-to']);
+	$date_from = $db->escape($_POST['recommender_submit_date-from']);
+	$date_to   = $db->escape($_POST['recommender_submit_date-to']);
 	$query_cond .= "AND DATE(recommendation_submission_date) >= DATE('$date_from') AND DATE(recommendation_submission_date) < DATE('$date_to')";
 }
 
@@ -45,8 +45,8 @@ $query_cond .= " AND (reference_name != '' OR reference_email != '')";
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 	$query_cond .= " ORDER BY applicant_id ASC ";
 } else {
-	$sort_by   = mysql_real_escape_string($_POST['sort_by']);
-	$sort_type = mysql_real_escape_string($_POST['sort_type']);	
+	$sort_by   = $db->escape($_POST['sort_by']);
+	$sort_type = $db->escape($_POST['sort_type']);	
 	$query_cond .= " ORDER BY $sort_by $sort_type";
 }
 

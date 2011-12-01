@@ -65,6 +65,10 @@ class Database
 		return $this->database_link == TRUE; //return boolean not a reference
 	}
 
+	function escape($value) {
+		return $this->database_link->real_escape_string( $value );
+	}
+
 	function query(/*$query, [[, $args [, $... ]]*/)
 	{
 		$returnArray = array();

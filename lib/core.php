@@ -142,9 +142,10 @@ function sort_array_by_date(&$array_to_sort, $date_field, $order) {
 	usort($array_to_sort, $compare_func);
 }
 
-function buildQuery($type, $field) {
-	$value = mysql_real_escape_string( $_POST[$field] );
-	$field = mysql_real_escape_string( $field );
+function buildQuery($type, $field, $db) {
+
+	$value = $db->escape( $_POST[$field] );
+	$field = $db->escape( $field );
 
 	if($value == '-') return "";	
 	switch($type) {
@@ -377,10 +378,11 @@ function strip_numeric_indexes(&$a) {
 
 
 function getDistinct($field, $table) {
-	$field = mysql_real_escape_string($field);
-	$table = mysql_real_escape_string($table);
 	$db = new Database();
 	$db->connect();
+	$field = $db->escape($field);
+	$table = $db->escape($table);
+
 	$qry_string = "SELECT DISTINCT `" . $field . "` FROM `" . $table . "`";
 	$qry = $db->query($qry_string);
 	$result = array('-', '');

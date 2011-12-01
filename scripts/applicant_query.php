@@ -41,21 +41,21 @@ if(checkValue($_POST['has_been_submitted'])) {
 	}
 }
 
-$query_cond .= buildQuery('direct', "application_payment_method");
-$query_cond .= buildQuery('direct', "application_fee_payment_status");
-$query_cond .= buildQuery('direct', "student_type");
-$query_cond .= buildQuery('direct', "start_semester");
-$query_cond .= buildQuery('direct', "start_year");
-$query_cond .= buildQuery('direct', "attendance_load");
-$query_cond .= buildQuery('direct', "academic_program");
-$query_cond .= buildQuery('contained', "applicant_name");
-$query_cond .= buildQuery('contained', "email");
-$query_cond .= buildQuery('contained', "applicant_id");
+$query_cond .= buildQuery('direct', "application_payment_method", $db);
+$query_cond .= buildQuery('direct', "application_fee_payment_status", $db);
+$query_cond .= buildQuery('direct', "student_type", $db);
+$query_cond .= buildQuery('direct', "start_semester", $db);
+$query_cond .= buildQuery('direct', "start_year", $db);
+$query_cond .= buildQuery('direct', "attendance_load", $db);
+$query_cond .= buildQuery('direct', "academic_program", $db);
+$query_cond .= buildQuery('contained', "applicant_name", $db);
+$query_cond .= buildQuery('contained', "email", $db);
+$query_cond .= buildQuery('contained', "applicant_id", $db);
 
 //Deal with date
 if( $_POST['application_submit_date-from'] != '' && $_POST['application_submit_date-to'] != '') {
-	$date_from = mysql_real_escape_string($_POST['application_submit_date-from']);
-	$date_to   = mysql_real_escape_string($_POST['application_submit_date-to']);	
+	$date_from = $db->escape($_POST['application_submit_date-from']);
+	$date_to   = $db->escape($_POST['application_submit_date-to']);	
 	$query_cond .= "AND application_submit_date >= '$date_from' AND application_submit_date < '$date_to'";
 }
 
@@ -63,8 +63,8 @@ if( $_POST['application_submit_date-from'] != '' && $_POST['application_submit_d
 if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 	$query_cond .= " ORDER BY application_submit_date DESC ";
 } else {
-	$sort_by   = mysql_real_escape_string($_POST['sort_by']);
-	$sort_type = mysql_real_escape_string($_POST['sort_type']);	
+	$sort_by   = $db->escape($_POST['sort_by']);
+	$sort_type = $db->escape($_POST['sort_type']);	
 	$query_cond .= " ORDER BY $sort_by $sort_type";
 }
 
@@ -76,7 +76,7 @@ $startpoint =  ($page * $limit) - $limit ;
 $query_limit = " LIMIT $startpoint, $limit ";
 
 
-//print "<tr><td>$query $query_cond</td></tr>";
+//print "<tr><td>$query $query_cond $query_limit</td></tr>";
 
 $applicants = $db->query($query . $query_cond . $query_limit);
 
