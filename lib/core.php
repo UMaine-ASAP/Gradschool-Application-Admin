@@ -189,7 +189,8 @@ function build_data(data) {
 	}
 }
 
-function update() {
+function update(limit) {
+	var limit = limit || 20;
 	var send_data = '';
 	
 	$('.filter').each( function () {
@@ -204,7 +205,7 @@ function update() {
 	});
 	var page = $('.pagination .selected a').html() || 1;
 			
-	send_data += '&sort_by=' + sort_by + '&sort_type=' + sort_type;
+	send_data += '&sort_by=' + sort_by + '&sort_type=' + sort_type + '&limit=' + limit;
 	$.ajax({
 		url: '<?php echo $query_script;?>',
 		type:'POST',
@@ -336,7 +337,7 @@ foreach($fields as $field) { ?>
 // Table Field names
 /* ======================== */
 ?>
-<tr class='light'>
+<tr class='light' id='headings'>
 <?php
 
 foreach($fields as $field) { ?>
@@ -362,6 +363,44 @@ foreach($fields as $field) { ?>
 ?>
 
 <div><span id='result-count'></span></div>
+
+<div><a href='#' onclick='update(1000000);'>Show All Results</a></div>
+
+<form action="getCSV.php" method="post" > 
+	<input type="hidden" name="csv_text" id="csv_text">
+	<input type="submit" value="Get CSV File" onclick="getCSVData()">
+</form>
+
+<script>
+function getCSVData(){
+	var csv_value = "";
+
+	//Build header
+	$('.data').find('tr#headings').each( function() {
+		var items = new Array();
+		$(this).find('th').each( function() {
+			var value = $(this).text();
+			items.push( '"' + $.trim(value) + '"' );
+		});	
+		if( items.length > 0) {
+			csv_value += items.join(',') + "\n";		
+		}
+	});
+	//Build data
+	$('.data').find('tr').each( function() {
+		var items = new Array();
+		$(this).find('td').each( function() {
+			var value = $(this).text();
+			items.push( '"' + $.trim(value) + '"' );
+		});
+		if( items.length > 0) {
+			csv_value += items.join(',') + "\n";		
+		}
+	});
+ 	
+ 	$("#csv_text").val(csv_value);	
+}
+</script>
 
 <?php } //end of function createDataTableHTML
 
