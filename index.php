@@ -14,6 +14,7 @@ verifyUser();
 	<script type="text/javascript" src="js/jqueryUI/js/jquery-ui-1.8.10.custom.min.js"></script>
 	<link rel='stylesheet' type='text/css' href='css/styles.css' />
 	<script src='js/core.js'></script>
+	<script src='js/table2CSV.js'></script>
 	<link href="css/pagination.css" rel="stylesheet" type="text/css" />
 	<link href="css/pagination-grey.css" rel="stylesheet" type="text/css" />
 
