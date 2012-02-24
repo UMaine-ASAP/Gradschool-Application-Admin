@@ -69,12 +69,11 @@ if($_POST['sort_by'] == '' && $_POST['sort_type'] == '' ) {
 }
 
 //limit display and deal with pages
-$page = (int) (!isset($_POST["page"]) ? 1 : $_POST["page"]);
-$limit = 20;
+$page  = (int) (!isset($_POST["page"])  ? 1  : $db->escape($_POST["page"]) );
+$limit = (int) (!isset($_POST["limit"]) ? 20 : $db->escape($_POST["limit"]) );;
 $startpoint =  ($page * $limit) - $limit ;
 
 $query_limit = " LIMIT $startpoint, $limit ";
-
 
 //print "<tr><td>$query $query_cond $query_limit</td></tr>";
 
@@ -82,7 +81,8 @@ $applicants = $db->query($query . $query_cond . $query_limit);
 
 $color = 'light';
 
-foreach($applicants as $applicant) { 		
+
+foreach($applicants as $applicant) {  
 	$color = $color == 'light'? 'dark' : 'light';
 ?>
 
@@ -155,6 +155,6 @@ $('#limit-search-results').click( function() {
 
 </script>
 <?php
-	echo '**&&%%&&**' . pagination(" `applicant_academic` WHERE 1 " . $query_cond, 20, $_POST['page']);
+	echo '**&&%%&&**' . pagination(" `applicant_academic` WHERE 1 " . $query_cond, $limit, $page);
 
 ?>	
