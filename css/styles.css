@@ -100,3 +100,11 @@ font-size: 12px;
 #selected-applicant_id {
 	width: 60px;	
 }
+.colored {
+	color: white;
+	background-color: red;
+}
+.cologreen {
+	color: white;
+	background-color: green;
+}

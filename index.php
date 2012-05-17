@@ -39,6 +39,7 @@ verifyUser();
 		<div class='inner'>
 		</div>
 	</div>
+	<div id="edit_program"></div>
 </div>
 </body>
 <script>
@@ -76,6 +77,7 @@ $('.menu-item').click(function () {
 	
 	loadPage($(this).attr('id'));
 });
+
 
 /*== Preload applicants ==*/
 loadPage('applicants');

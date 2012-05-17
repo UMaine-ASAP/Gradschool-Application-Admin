@@ -54,8 +54,8 @@ foreach($programs as $program) {
 ?>
 	<tr class='<?php echo $color;?>' id='program-<?php echo $program['academic_index']?>'>
 <!--  	<td><?php echo ''?></td>-->	
-		<td class='center' >
-			<!-- <input type='checkbox' <?php if($program['active'] == 'yes') echo 'checked';?> value='yes'/> -->
+		<td class='center <?php if($program['active'] == 'yes') {echo 'cologreen';} else{echo 'colored';} ?>' >
+			
 			<?php echo $program['active']; ?>
 		</td>
 		<td><?php echo $program['academic_program']?></td>
@@ -69,9 +69,11 @@ foreach($programs as $program) {
 		<td class='center' ><?php echo $program['nebhe_vt']?></td>		
 		
 		<!-- Delete option -->
- 		<td class="ui-state-default ui-corner-all edit-program-icon" title="edit program">
-			<span class="ui-icon ui-icon-pencil"></span>
-		</td> 
+ 		<td class="ui-state-default ui-corner-all" id='program-<?php echo $program['academic_index']?>' title="edit program">
+			<div class="edit-program-icon">
+				<span class="ui-icon ui-icon-pencil"></span>
+			</div>
+		</td>
 	</tr>
 
 <?php } ?>
@@ -81,52 +83,71 @@ var program_id = -1;
 $('.ui-state-default').hover( function() { $(this).addClass('ui-state-hover'); }, function() { $(this).removeClass('ui-state-hover'); });
 
 $(document).ready( function() {
-	<?php
-		$new_program_form = get_include_contents( "../pages/add_info.php");
-//		print $new_program;
-		print "<div id='edit-program' title='Edit this program?'><p>$new_program_form</p></div>";
-?>
+	console.log("test");
 
-	$( "#edit-program" ).dialog({
-			resizable: false,
-			height:160,
-			modal: true,
-			autoOpen: false,
-			buttons: {
-				"Edit this Program": function() {
-					var parameters = {
-						"applicant_id" : 		'',
-						"active" : 				'',
-						"academic_program" : 	'',
-						"academic_dept_code" :  '',
-						"academic_dept" : 	 	'',
-						"academic_degree" :  	'',
-						"NEBHE_CT" :		 	''				
-					};
-				 
-					$.ajax({
-						url: "<?php echo $GLOBALS['APPMANAGER_ROOT'];?>scripts/editProgram.php",
-						type:'POST',
-						data: parameters,
-						success: function(data){
-							alert(data);
-						}
-					});
+	$("#edit_program").dialog({
+		resizeable: true,
+		height: 400,
+		width: 700,
+		modal: true,
+		autoOpen: false,
+		buttons: {
+			Delete: function(){
+				console.log('delete');
+				$(this).dialog("close");
+			},
+			Cancel: function(){
+				$(this).dialog("close");
+			},
+			Save: function() {
+				var academic_index = $("input#academic_index").val();
+				var academic_dept = $("input#academic_dept").val();
+				var academic_dept_code = $("input#academic_dept_code").val();
+				var academic_degree = $("input#academic_degree").val();
+				var academic_program = $("input#academic_programs").val();
 
-					$( this ).dialog( "close" );
-				},
-				Cancel: function() {
-					$( this ).dialog( "close" );
-				}
-			} // End Butons
+				academic_dept = encodeURIComponent(academic_dept);
+
+				var active = $("input#active_check").is(':checked');
+				var nebhe_ct = $("input#nebhe_ct").is(':checked');
+				var nebhe_ma = $("input#nebhe_ma").is(':checked');
+				var nebhe_nh = $("input#nebhe_nh").is(':checked');
+				var nebhe_ri = $("input#nebhe_ri").is(':checked');
+				var nebhe_vt = $("input#nebhe_vt").is(':checked');
+
+				var datastring = 'academic_index=' + academic_index + '&academic_program=' + academic_program + '&academic_dept=' + academic_dept + '&academic_dept_code=' + academic_dept_code + '&academic_degree=' + academic_degree + '&nebhe_ct=' + nebhe_ct + '&nebhe_ma=' + nebhe_ma + '&nebhe_nh=' + nebhe_nh + '&nebhe_ri=' + nebhe_ri + '&nebhe_vt=' + nebhe_vt + '&active=' + active;
+
+				$.ajax({
+					url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/updateProgram.php",
+					type: 'POST',
+					data: datastring,
+					success: function(data){
+						
+						$('#edit_program').dialog("close");
+						$('#main div').load("<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>pages/programs.php")
+					} 
+				});
+			}
+		}
 	});
-	
+
 	$('.edit-program-icon').click( function() {
+
 		var id = $(this).parent().attr('id');
-		program_id = parseFloat( id.substring(8)) ;
-		$('#edit-program').dialog("open");
-	});
-	
+		program_id = parseFloat( id.substring(8));
+		console.log(program_id);
+		$.ajax({
+			url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/editProgram.php",
+			type: 'POST',
+			data: "program=" + program_id,
+			success: function(data){
+				$('#edit_program').html(data);
+				$('#edit_program').dialog("open");
+			} 
+		});
+
+	//alert(program_id);
+});
 	
 });
 </script>
