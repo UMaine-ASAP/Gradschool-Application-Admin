@@ -15,6 +15,7 @@ verifyUser();
 	<link rel='stylesheet' type='text/css' href='css/styles.css' />
 	<script src='js/core.js'></script>
 	<script src='js/table2CSV.js'></script>
+	<script src='js/jquery.select-to-autocomplete.js'></script>
 	<link href="css/pagination.css" rel="stylesheet" type="text/css" />
 	<link href="css/pagination-grey.css" rel="stylesheet" type="text/css" />
 
@@ -39,7 +40,7 @@ verifyUser();
 		<div class='inner'>
 		</div>
 	</div>
-	<div id="edit_program"></div>
+	<div id="edit_program" title="Edit Program"></div>
 </div>
 </body>
 <script>

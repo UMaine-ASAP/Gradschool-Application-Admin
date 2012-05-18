@@ -28,10 +28,10 @@ $fields = array(
 	array('NEBHE VT', 		'nebhe_vt', 	'select', array('-','', 'X'))
 );
 
+include 'add_info.php';
 createDataTableHTML('Programs', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/programs_query.php", $_POST['page']);
 
 
-include 'add_info.php';
 
 
 } else {

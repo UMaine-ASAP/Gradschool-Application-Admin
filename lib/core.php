@@ -364,13 +364,6 @@ foreach($fields as $field) { ?>
 
 <div><span id='result-count'></span></div>
 
-<div><a href='#' onclick='update(1000000);'>Show All Results</a></div>
-
-<form action="getCSV.php" method="post" > 
-	<input type="hidden" name="csv_text" id="csv_text">
-	<input type="submit" value="Get CSV File" onclick="getCSVData()">
-</form>
-
 <script>
 function getCSVData(){
 	var csv_value = "";

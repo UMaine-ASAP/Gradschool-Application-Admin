@@ -1,8 +1,10 @@
 <?php
-	include_once "../lib/database.php";
 	include_once "../lib/variables.php";
+	include_once "../lib/database.php";
+	include_once '../lib/core.php';
 
-	
+$db = Database::get();
+
 //make sure user is valid
 if(check_ses_vars() != '') {
 	
@@ -25,22 +27,22 @@ if(check_ses_vars() != '') {
 	$_POST['academic_dept'] = $_POST['academic_dept_heading'];  // need to fix length issue
 	$_POST['description_app'] = $_POST['academic_dept'];
 	$_POST['description_list'] = $_POST['academic_dept'];
-
-	
-	
-	//$_POST['academic_program'] = strtoupper($_POST['academic_program']);
 	
 	// initialize the checkbox variables
 	// initialized function
-	function defineCheckBox(&$x) {
-		if ( !isset($x) ) $x = '';
-		else $x = 'X';
+	function true_false($var){
+		if($var=="true"){
+			return "X";
+		}
+		else {
+			return "";
+		}
 	}
-	definecheckBox($_POST['nebhe_ct']);
-	definecheckBox($_POST['nebhe_nh']);
-	definecheckBox($_POST['nebhe_ma']);
-	definecheckBox($_POST['nebhe_ri']);
-	definecheckBox($_POST['nebhe_vt']);
+	$nebhe_ct = true_false($_POST['nebhe_ct']);
+	$nebhe_ma = true_false($_POST['nebhe_ma']);
+	$nebhe_nh = true_false($_POST['nebhe_nh']);
+	$nebhe_ri = true_false($_POST['nebhe_ri']);
+	$nebhe_vt = true_false($_POST['nebhe_vt']);
 		if ( ($_POST['academic_program'] == ''))
 			echo "academic_program";
 		if($_POST['academic_dept_code'] == '')
@@ -63,15 +65,7 @@ if(check_ses_vars() != '') {
 		//else submit();
 		
 	}
-/*	
-	checkRequired ($_POST['academic_code']);
-	checkRequired ($_POST['academic_dept']);
-	checkRequired ($_POST['academic_dept_heading']);
-	checkRequired ($_POST['academic_program']);
-	checkRequired ($_POST['academic_degree']);
-	checkRequired ($_POST['academic_app']);
-	checkRequired ($_POST['academic_list']);
-*/	
+
 
 	function modifyTheRest() {
 		if (isset ($_POST['academic_plan'])) {
@@ -85,39 +79,26 @@ if(check_ses_vars() != '') {
 		//else 	return "error";
 			
 		switch ($_POST['academic_degree']) {
-			case "PHD":
+			case ("PHD"):
 				$_POST['academic_degree_heading'] = "PhD";
 				break;
-			case "MED":
+			case ("MED"):
 				$_POST['academic_degree_heading'] = "MEd";
 				break;
 			//default: 
 				//return "error";
 		}
-		/*
-		$_POST['academic_program'],$_POST['academic_plan'],$_POST['academic_dept_code'],
-		$_POST['academic_dept'],
-		$_POST['academic_dept_heading'],$_POST['academic_degree'],$_POST['academic_degree_heading']
-		$_POST['description_app'],$_POST['description_list']
-		*/
 	}
-	
-	modifyTheRest();
-	
-	if ((checkRequired() == "error") ) 
-		echo "submit failed!";
-	else submit();
 
-	
-	function submit () {
-		$db = new Database();
-		$db->connect();
-		$qry = "INSERT INTO UM_ACADEMIC(academic_program,academic_plan,academic_dept_code,academic_dept,academic_dept_heading,academic_degree,academic_degree_heading,	description_app,description_list,nebhe_ct,nebhe_ma,nebhe_nh,nebhe_ri,nebhe_vt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);";
-		$db->iquery($qry, $_POST['academic_program'],$_POST['academic_plan'],$_POST['academic_dept_code'],$_POST['academic_dept'],$_POST['academic_dept_heading'],$_POST['academic_degree'],$_POST['academic_degree_heading'],$_POST['description_app'],$_POST['description_list'],$_POST['nebhe_ct'],$_POST['nebhe_ma'],$_POST['nebhe_nh'],$_POST['nebhe_ri'],$_POST['nebhe_vt']);
-		$db->close();
+	modifyTheRest();
+
+	if (checkRequired() == "error"){
+		echo "submit failed!";
+	} 
+	else {
+		$qry = "INSERT INTO um_academic (academic_program,academic_plan,academic_dept_code,academic_dept,academic_dept_heading,academic_degree,academic_degree_heading,	description_app,description_list,nebhe_ct,nebhe_ma,nebhe_nh,nebhe_ri,nebhe_vt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);";
+		$db->iquery($qry, $_POST['academic_program'],$_POST['academic_plan'],$_POST['academic_dept_code'],$_POST['academic_dept'],$_POST['academic_dept_heading'],$_POST['academic_degree'],$_POST['academic_degree_heading'],$_POST['description_app'],$_POST['description_list'],$nebhe_ct, $nebhe_ma, $nebhe_nh, $nebhe_ri, $nebhe_vt);
 		echo "submit succeed";
 	}
-
-	
 } //end user check	
 ?>
