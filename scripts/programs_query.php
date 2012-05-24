@@ -95,16 +95,20 @@ $(document).ready( function() {
 				var academic_index = $("input#academic_index").val();
 				var dataString = 'academic_index=' + academic_index + '&mode=delete';
 
-				$.ajax({
-					url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/updateProgram.php",
-					type: 'POST',
-					data: dataString,
-					success: function(data){
-						$('#edit_program').dialog("close");
-						$('#main div').load("<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>pages/programs.php")
 
-					}
-				})
+				var deleting = confirm("Are you sure you want to delete this program?");
+				if(deleting == true){
+					$.ajax({
+						url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/updateProgram.php",
+						type: 'POST',
+						data: dataString,
+						success: function(data){
+							$('#edit_program').dialog("close");
+							$('#main div').load("<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>pages/programs.php")
+
+						}
+					})
+				}
 			},
 			Cancel: function(){
 				$(this).dialog("close");
