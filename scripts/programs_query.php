@@ -83,30 +83,38 @@ var program_id = -1;
 $('.ui-state-default').hover( function() { $(this).addClass('ui-state-hover'); }, function() { $(this).removeClass('ui-state-hover'); });
 
 $(document).ready( function() {
-	console.log("test");
 
 	$("#edit_program").dialog({
-		resizeable: true,
-		height: 400,
+		resizeable: false,
+		height: 300,
 		width: 700,
 		modal: true,
 		autoOpen: false,
 		buttons: {
 			Delete: function(){
-				console.log('delete');
-				$(this).dialog("close");
+				var academic_index = $("input#academic_index").val();
+				var dataString = 'academic_index=' + academic_index + '&mode=delete';
+
+				$.ajax({
+					url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/updateProgram.php",
+					type: 'POST',
+					data: dataString,
+					success: function(data){
+						$('#edit_program').dialog("close");
+						$('#main div').load("<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>pages/programs.php")
+
+					}
+				})
 			},
 			Cancel: function(){
 				$(this).dialog("close");
 			},
 			Save: function() {
 				var academic_index = $("input#academic_index").val();
-				var academic_dept = $("input#academic_dept").val();
-				var academic_dept_code = $("input#academic_dept_code").val();
-				var academic_degree = $("input#academic_degree").val();
+				var academic_dept = $("select#academic_dept").val();
+				var academic_degree = $("select#aca_deg").val();
 				var academic_program = $("input#academic_programs").val();
 
-				academic_dept = encodeURIComponent(academic_dept);
 
 				var active = $("input#active_check").is(':checked');
 				var nebhe_ct = $("input#nebhe_ct").is(':checked');
@@ -115,7 +123,7 @@ $(document).ready( function() {
 				var nebhe_ri = $("input#nebhe_ri").is(':checked');
 				var nebhe_vt = $("input#nebhe_vt").is(':checked');
 
-				var datastring = 'academic_index=' + academic_index + '&academic_program=' + academic_program + '&academic_dept=' + academic_dept + '&academic_dept_code=' + academic_dept_code + '&academic_degree=' + academic_degree + '&nebhe_ct=' + nebhe_ct + '&nebhe_ma=' + nebhe_ma + '&nebhe_nh=' + nebhe_nh + '&nebhe_ri=' + nebhe_ri + '&nebhe_vt=' + nebhe_vt + '&active=' + active;
+				var datastring = 'mode=edit&academic_index=' + academic_index + '&academic_program=' + academic_program + '&academic_dept=' + academic_dept + '&academic_degree=' + academic_degree + '&nebhe_ct=' + nebhe_ct + '&nebhe_ma=' + nebhe_ma + '&nebhe_nh=' + nebhe_nh + '&nebhe_ri=' + nebhe_ri + '&nebhe_vt=' + nebhe_vt + '&active=' + active;
 
 				$.ajax({
 					url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/updateProgram.php",
@@ -135,7 +143,6 @@ $(document).ready( function() {
 
 		var id = $(this).parent().attr('id');
 		program_id = parseFloat( id.substring(8));
-		console.log(program_id);
 		$.ajax({
 			url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/editProgram.php",
 			type: 'POST',
