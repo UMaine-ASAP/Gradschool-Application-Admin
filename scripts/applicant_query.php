@@ -18,7 +18,7 @@ function get_academic_name($academic_code) {
 	$db = Database::get();
 
 	$name = $db->query("SELECT academic_dept_heading FROM um_academic WHERE academic_program = %s", $academic_code);
-	return $name[0];
+	return $name[0][0];
 }
 
 // ====== //
@@ -105,7 +105,7 @@ foreach($applicants as $applicant) {
 		</td>
 
 		<!-- academic info -->
-		<td><?php echo $applicant['academic_program'] . ' ' . get_academic_name($appliedProgram['academic_program']); ?></td>
+		<td><?php echo $applicant['academic_program'] . ' - ' . get_academic_name($applicant['academic_program']); ?></td>
 		<td><?php echo $applicant['application_submit_date'] ?></td>
 		<td><?php echo $applicant['start_semester'] ?></td>
 		<td><?php echo $applicant['start_year'] ?></td>
