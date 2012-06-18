@@ -5,22 +5,30 @@ include_once 'database.php';
 /* =================================== */
 // User management
 /* =================================== */
+//Check if the array is associative or not
 function isAssoc($arr)
 {
     return array_keys($arr) !== range(0, count($arr) - 1);
 }
 
-function set_ses_vars($ID) {
+function set_ses_vars($ID) 
+{
 	$_SESSION['userid'] = $ID;
 	$_SESSION['lastAccess'] = time();
 }
 
-function check_ses_vars() {
+function check_ses_vars() 
+{
 	session_start();
-	
-	if(isset($_SESSION['userid']) && isset($_SESSION['lastAccess'])) {
+
+	//Check for session variables	
+	if(isset($_SESSION['userid']) && isset($_SESSION['lastAccess'])) 
+	{
 		$latestAccess = time();
-		if($latestAccess - $_SESSION['lastAccess'] > $GLOBALS["session_timeout"]) {
+		
+		//If lastAccess exceeds the timeout, log the user out
+		if($latestAccess - $_SESSION['lastAccess'] > $GLOBALS["session_timeout"]) 
+		{
 			user_logout();
 			return '';
 		}
@@ -33,26 +41,32 @@ function check_ses_vars() {
 /**
 * Login
 **/
-function user_login($id) {
+function user_login($id) 
+{
 	session_start();
 	set_ses_vars($id);
 }
 
-function user_logout() {
+function user_logout() 
+{
 	session_start();
 	session_unset();
 	unset($_SESSION['userid']);
 	unset($_SESSION['lastAccess']);
 }
 
-
-function verifyUser() {
-	if(check_ses_vars() == '') {
+//Simple session check via check_ses_vars
+function verifyUser() 
+{
+	if(check_ses_vars() == '') 
+	{
 		header('Location:' . $GLOBALS['APPMANAGER_ROOT'] . '/login.php');
 	}
 }
 
-function getUserName($id) {
+//Get the username from the database from the given id
+function getUserName($id) 
+{
 	$db = Database::get();
 	$applicants = $db->query("SELECT * FROM admin WHERE id = %i", $id);
 	return $applicants[0]['username'];
@@ -61,6 +75,7 @@ function getUserName($id) {
 /* =================================== */
 // Data filters
 /* =================================== */
+//Checks if a date is between two others, returns a boolean
 function check_in_range($start_date, $end_date, $date_from_user)
 {
   // Convert to timestamp
@@ -72,6 +87,7 @@ function check_in_range($start_date, $end_date, $date_from_user)
   return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
 }
 
+
 function filter_set(&$src, $type, $fields) {
 	$result = false;
 	foreach($fields as $field) {
@@ -80,25 +96,32 @@ function filter_set(&$src, $type, $fields) {
 	return $result;
 }
 
-function filter(&$src, $type, $field) {
+function filter(&$src, $type, $field) 
+{
 	if($_POST[$field] == '-') return false;
 	
-	switch($type) {
+	switch($type) 
+	{
 	case 'direct':
 		if($_POST[$field] == '' ) $_POST[$field] = 'blank';
 	
 		$isblank = false;
 
 		//check if field is blank
-		if($_POST[$field] == 'blank') {
-			if(isset($src[$field]) && $src[$field] != '') {
+		if($_POST[$field] == 'blank') 
+		{
+			if(isset($src[$field]) && $src[$field] != '') 
+			{
 				$isblank = true;
-			} else {
+			} 
+			
+			else 
+			{
 				$_POST[$field] = '';		
 			}
 		}	
 	
-		return isset($_POST[$field]) && $_POST[$field] != '' && $src[$field] != $_POST[$field] || $isblank;
+		return isset($_POST[$field]) && $_POST[$field] != '' &&  ( $src[$field] != $_POST[$field] ) || $isblank;
 		break;
 	case 'contained':
 		return $_POST[$field] != '' && preg_match('/'.$_POST[$field].'/i', $src[$field]) === 0;
@@ -108,15 +131,21 @@ function filter(&$src, $type, $field) {
 }
 
 
-function sort_array(&$array_to_sort, $sort_by, $sort_type, $value = 'text') {
+function sort_array(&$array_to_sort, $sort_by, $sort_type, $value = 'text') 
+{
 
-	if( $sort_by != '' && $sort_type != '' ) {
+	if( $sort_by != '' && $sort_type != '' ) 
+	{
 		//construct specific comparison function
 		$cmp = $sort_type == 'ASCD' ? '<' : '>';
-		if($value == 'text') {
+		if($value == 'text') 
+		{
 			$v1 = 'strtolower($a["' . $sort_by . '"])';
 			$v2 = 'strtolower($b["' . $sort_by . '"])';
-		} else if ($value = 'numeric') {
+		} 
+		
+		else if ($value = 'numeric') 
+		{
 			$v1 = 'intval($a["' . $sort_by . '"])';
 			$v2 = 'intval($b["' . $sort_by . '"])';
 		}
@@ -128,7 +157,8 @@ function sort_array(&$array_to_sort, $sort_by, $sort_type, $value = 'text') {
 	}
 }
 
-function sort_array_by_date(&$array_to_sort, $date_field, $order) {
+function sort_array_by_date(&$array_to_sort, $date_field, $order) 
+{
 	if( $date_field == '' || $order == '' ) return;
 
 	//construct specific comparison function
@@ -142,22 +172,26 @@ function sort_array_by_date(&$array_to_sort, $date_field, $order) {
 	usort($array_to_sort, $compare_func);
 }
 
-function buildQuery($type, $field, $db) {
+function buildQuery($type, $field, $db) 
+{
 
 	$value = $db->escape( $_POST[$field] );
 	$field = $db->escape( $field );
 
 	if($value == '-') return "";	
-	switch($type) {
+	switch($type) 
+	{
 	case 'direct':
 		//if($_POST[$field] == '' );// $_POST[$field] = 'blank';
 
-		if(isset($value) && $value != '') {
+		if(isset($value) && $value != '') 
+		{
 			return " AND $field = '$value'";
 		}
 		break;
 	case 'contained':
-		if($value != '') {
+		if($value != '') 
+		{
 			return " AND LOWER($field) LIKE LOWER('%$value%')";
 		}
 		break;
@@ -165,9 +199,15 @@ function buildQuery($type, $field, $db) {
 	}
 }
 
-function checkValue($v) { return isset($v) && $v != '';}
+//Validate valid, non-empty variable
+function checkValue($v) 
+{ 
+	return isset($v) && $v != '';	
+}
 
-function createDataTableHTML($name, $fields, $query_script, $limit) {
+
+function createDataTableHTML($name, $fields, $query_script, $limit) 
+{
 
 /* Javascript Code */
 ?>
@@ -182,18 +222,22 @@ function createDataTableHTML($name, $fields, $query_script, $limit) {
 var sort_by   = '';
 var sort_type = '';
 
-function build_data(data) {
+function build_data(data) 
+{
 	var result = '';
-	for(var i=0; i<strlen(data); i+=2) {
+	for(var i=0; i<strlen(data); i+=2) 
+	{
 		
 	}
 }
 
-function update(limit) {
+function update(limit) 
+{
 	var limit = limit || 20;
 	var send_data = '';
 	
-	$('.filter').each( function () {
+	$('.filter').each( function () 
+	{
 		var id 			= $(this).attr('id');
 		var index 		= id.indexOf('-');
 		var fieldname 	= id.substr(index+1);
@@ -219,15 +263,17 @@ function update(limit) {
 	});
 }
 
-$('.sort').click( function () {
-
+$('.sort').click( function () 
+{
 	var id 			= $(this).attr('id');
 	var index 		= id.indexOf('-');
 	var new_sort 	= id.substr(index+1); //set global sort field
 	
 	
-	if(new_sort != sort_by) {
-		$('.sort').each( function() {		
+	if(new_sort != sort_by) 
+	{
+		$('.sort').each( function() 
+		{		
 			var icon = $(this).children().children('.icon');
 			icon.removeClass('ui-icon');
 			icon.removeClass('ui-icon-triangle-1-s');
@@ -239,14 +285,21 @@ $('.sort').click( function () {
 		icon.addClass('ui-icon');
 		icon.addClass('ui-icon-triangle-1-s');	
 		sort_type = 'DESC';
-	} else {
+	} 
+	
+	else 
+	{
 		var icon = $(this).children().children('.icon');
 
-		if(icon.hasClass('ui-icon-triangle-1-s')) {
+		if(icon.hasClass('ui-icon-triangle-1-s')) 
+		{
 			icon.removeClass('ui-icon-triangle-1-s');
 			icon.addClass('ui-icon, ui-icon-triangle-1-n');	
 			sort_type = 'ASC';
-		} else {
+		} 
+		
+		else 
+		{
 			icon.removeClass('ui-icon-triangle-1-n');			
 			icon.addClass('ui-icon-triangle-1-s');	
 			sort_type = 'DESC';
@@ -258,7 +311,8 @@ $('.sort').click( function () {
 	update();
 });
 
-$('.filter').keyup( function () {
+$('.filter').keyup( function () 
+{
 //	wait(40);
 //	update();
 });
@@ -400,17 +454,20 @@ function getCSVData(){
 
 
 
-
-function strip_numeric_indexes(&$a) {
+//Strip numeric indexes from an array
+function strip_numeric_indexes(&$a) 
+{
 	$result = array();
-	foreach($a as $id_key => $value){
+	foreach($a as $id_key => $value)
+	{
 		if(!is_numeric($id_key)) $result[strtoupper($id_key)] = $value;
 	}
 	return $result;
 }
 
-
-function getDistinct($field, $table) {
+//Get distinct values from a field in a table
+function getDistinct($field, $table) 
+{
 	$db = new Database();
 	$db->connect();
 	$field = $db->escape($field);
@@ -419,7 +476,8 @@ function getDistinct($field, $table) {
 	$qry_string = "SELECT DISTINCT `" . $field . "` FROM `" . $table . "`";
 	$qry = $db->query($qry_string);
 	$result = array('-', '');
-	foreach($qry as $q) {
+	foreach($qry as $q) 
+	{
 		array_push($result, $q[$field]);
 	}
 	$db->close();
@@ -428,7 +486,8 @@ function getDistinct($field, $table) {
 
 
 ////////////////////////////////
-  function get_mime_content_type($filename) {
+  function get_mime_content_type($filename) 
+  {
 
         $mime_types = array(
 
@@ -487,24 +546,29 @@ function getDistinct($field, $table) {
         );
 
         $ext = strtolower(array_pop(explode('.',$filename)));
-        if (array_key_exists($ext, $mime_types)) {
+        if (array_key_exists($ext, $mime_types)) 
+        {
             return $mime_types[$ext];
         }
-        elseif (function_exists('finfo_open')) {
+        elseif (function_exists('finfo_open')) 
+        {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
             return $mimetype;
         }
-        else {
+        else 
+        {
             return 'application/octet-stream';
         }
     }
 
 
  //Acts as a normal php include except output of script is returned from function instead of outputed to browser
-function get_include_contents($filename) {
-    if (is_file($filename)) {
+function get_include_contents($filename) 
+{
+    if (is_file($filename)) 
+    {
         ob_start();
         include $filename;
         return ob_get_clean();

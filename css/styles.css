@@ -3,7 +3,7 @@
 /*************/
 
 html {
-background-image: url('http://hoonah.asap.um.maine.edu/grad_application/application/images/background-tile2.png');
+background-image: url('images/background-tile.png');
 
 }
 
@@ -17,9 +17,8 @@ float: left;
 }
 
 #main {
-min-width: 800px;
-float: left;
-margin: 0 15px;
+position: absolute;
+left: 200px;
 }
 
 #content{
