@@ -41,6 +41,17 @@ if(checkValue($_POST['has_been_submitted'])) {
 	}
 }
 
+if(checkValue($_POST['status'])){
+	switch($_POST['status']){
+		case 'Processed':
+			$query_cond .= " AND status = 1";
+			break;
+		case 'Not Processed':
+			$query_cond .= " AND status = 0";
+			break;
+	}
+}
+
 $query_cond .= buildQuery('direct', "application_payment_method", $db);
 $query_cond .= buildQuery('direct', "application_fee_payment_status", $db);
 $query_cond .= buildQuery('direct', "student_type", $db);
@@ -85,8 +96,16 @@ $color = 'light';
 foreach($applicants as $applicant) {  
 	$color = $color == 'light'? 'dark' : 'light';
 ?>
-
 	<tr class='<?php echo $color;?>' id='applicant_data'>
+		<td style="text-align: center;">
+			<?PHP echo '<input type="checkbox" class="processed_check" id="applicant-' . $applicant['applicant_id'] . '" ';
+			if($applicant['status'] == 1){
+				echo "checked";
+			}
+			echo '>';
+			?>
+		</td>
+
 		<td><?php echo $applicant['applicant_id']; ?></td>
 		<td><?php echo $applicant['application_payment_method']; ?></td>		
 		<td><?php echo ($applicant['has_been_submitted'] == 1) ? 'yes' : 'no'; ?></td>
@@ -151,6 +170,33 @@ $('#display-all-results').click( function() {
 
 $('#limit-search-results').click( function() {
 	loadPage('applicants');
+});
+//C1F5B0
+$('.processed_check').click( function() {
+	var status;
+	var id = $(this).attr('id').split('-')[1];
+
+	if($(this).is(':checked')) 
+		{status = '1';}
+	else
+		{status = '0';}
+
+	var dataString = 'id=' + id + '&status=' + status;
+
+		$.ajax({
+			url: "<?PHP echo $GLOBALS['APPMANAGER_ROOT'] ?>scripts/processApplication.php",
+			type: 'POST',
+			data: dataString,
+			success: function() {
+				console.log("Updated " + id + " with status " + status);
+				if(status == 1){
+					$('#applicant-'+ id).closest("tr").css('background-color', 'C1F5B0');
+				}
+				else{
+					$('#applicant-'+ id).closest("tr").css('background-color', '');
+				}
+			} 
+		});
 });
 
 </script>
