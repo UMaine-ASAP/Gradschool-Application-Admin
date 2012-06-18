@@ -8,6 +8,7 @@ if(check_ses_vars() != '') {
 $db = Database::get();
 
 $fields = array(
+	array('Method', 'reference_online', 'select', array('All', 'Online*-*selected', 'Not Online')),
 	array('Date Submitted', 	 'recommender_submit_date', 	'date'),
 	array('Applicant ID', 		 'applicant_id', 			'text'),
 	array('Applicant Name', 	 'applicant_name', 			'text'),
@@ -15,6 +16,7 @@ $fields = array(
 	array('Recommender Name', 'reference_name',		'text'),
 	
 	array('Recommender Email', 		 'reference_email', 'text'),
+
 );
 
 createDataTableHTML('Recommenders', $fields, $GLOBALS['APPMANAGER_ROOT'] . "scripts/recommenders_query.php", $_POST['limit']);
