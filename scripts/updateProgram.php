@@ -15,7 +15,6 @@ function true_false($var){
 }
 
 switch($_POST['mode']){
-
 case("edit"):
 	if($_POST['active'] == "true"){
 		$active = "yes";
@@ -38,17 +37,15 @@ case("edit"):
 	$nebhe_ri = true_false($_POST['nebhe_ri']);
 	$nebhe_vt = true_false($_POST['nebhe_vt']);
 
-	$query = "UPDATE um_academic SET active = '$active', academic_program = '{$_POST['academic_program']}', academic_plan = '{$academic_plan}', academic_dept_code = '{$department[1]}', academic_dept = '{$department[0]}', academic_dept_heading = '{$department[2]}', academic_degree = '{$degree[0]}', academic_degree_heading = '{$degree[1]}', description_app = '{$description}', description_list = '{$description}', nebhe_ct = '$nebhe_ct', nebhe_ma = '$nebhe_ma', nebhe_nh = '$nebhe_nh', nebhe_ri = '$nebhe_ri', nebhe_vt = '$nebhe_vt' WHERE academic_index = '$id'";
+	$query = "UPDATE um_academic SET active = %s, academic_program = %s, academic_plan = %s, academic_dept_code = %s, academic_dept = %s, academic_degree_heading = %s, academic_degree = %s, academic_degree_heading = %s, description_app = %s, description_list = %s, nebhe_ct = %s, nebhe_ma = %s, nebhe_nh = %s, nebhe_ri = %s, nebhe_vt = %s WHERE academic_index = %s";
 
-	echo $query;
-
-	$db->iquery($query);
+	$db->iquery($query, $active, $_POST['academic_program'], $academic_plan, $department[1], $department[0], $department[2], $degree[0], $degree[1], $description, $description, $nebhe_ct, $nebhe_ma, $nebhe_nh, $nebhe_ri, $nebhe_vt, $id);
 	break;
 case("delete"):
 	$id = $_POST['academic_index'];
 
-	$query = "DELETE FROM um_academic WHERE academic_index = '$id'";
-	$db->iquery($query);
+	$query = "DELETE FROM um_academic WHERE academic_index = %s";
+	$db->iquery($query, $id);
 	break;
 }
 ?>

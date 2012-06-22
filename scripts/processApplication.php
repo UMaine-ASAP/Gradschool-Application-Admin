@@ -6,8 +6,8 @@ include_once '../lib/core.php';
 
 $db = Database::get();
 
-$query = "UPDATE applicant_academic SET status = '{$_POST['status']}' WHERE applicant_id = '{$_POST['id']}'";
+$query = "UPDATE applicant_academic SET status = %s WHERE applicant_id = %s";
 
-$db->iquery($query);
+$db->iquery($query, $_POST['status'], $_POST['id']);
 
 ?>
