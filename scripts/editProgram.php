@@ -12,6 +12,9 @@ include_once '../lib/database.php';
 include_once '../lib/core.php';
 
 
+//make sure user is valid
+if(check_ses_vars() != '') {
+
 $program_id = $_POST['program'];
 //$program_id = mysql_real_escape_string($program_id);
 //echo $program_id;
@@ -71,5 +74,6 @@ foreach($programs as $program){
 	
 	<?PHP
 	//echo $program['academic_program'];
+}
 }
 ?>
