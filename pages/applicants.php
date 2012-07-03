@@ -33,6 +33,7 @@ foreach($result as $r) {
 //	Array('output-name', 'filter-name', 'select', data),
 //}
 $fields = array(
+	array('Processed', 'status', 'select', array('All', 'Processed', 'Not Processed*-*selected')),
 	array('External ID', 'applicant_id', 				'text'),
 	array('Online Payment', 'application_payment_method', 'select', array('-', 'PAYLATER', 'PAYNOW')),	
 	array('Submitted', 	'has_been_submitted', 		'select', array('-','yes', 'no')),
