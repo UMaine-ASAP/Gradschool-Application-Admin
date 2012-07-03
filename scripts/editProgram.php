@@ -18,9 +18,9 @@ $program_id = $_POST['program'];
 
 $db = Database::get();
 
-$query = "SELECT academic_index, active, academic_program, academic_dept_code, academic_dept, academic_degree, nebhe_ct, nebhe_ma, nebhe_nh, nebhe_ri, nebhe_vt FROM um_academic WHERE academic_index = " . $program_id  . "  LIMIT 1";
+$query = "SELECT academic_index, active, academic_program, academic_dept_code, academic_dept, academic_degree, nebhe_ct, nebhe_ma, nebhe_nh, nebhe_ri, nebhe_vt FROM um_academic WHERE academic_index = %s LIMIT 1"
 
-$programs = $db->query($query);
+$programs = $db->query($query, $program_id);
 
 $academic_dept_heading_and_code = $db->query('SELECT DISTINCT academic_dept, academic_dept_code, academic_dept_heading FROM um_academic ORDER BY academic_dept');
 $degrees = $db->query('SELECT DISTINCT academic_degree, academic_degree_heading FROM um_academic ORDER BY academic_degree ');
