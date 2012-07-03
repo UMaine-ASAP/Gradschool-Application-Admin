@@ -31,6 +31,16 @@ $query_cond .= buildQuery('contained', "applicant_name", $db);
 $query_cond .= buildQuery('contained', "reference_email", $db);
 $query_cond .= buildQuery('contained', "applicant_id", $db);
 
+//Handle the dropdown box for online vs offline submissions
+switch($_POST['reference_online']){
+	case('Online'):
+		$query_cond .= " AND reference_online = 1";
+		break;
+	case('Not Online'):
+		$query_cond .= " AND reference_online = 0";
+		break;
+}
+
 
 //Deal with date
 if( $_POST['recommender_submit_date-from'] != '' && $_POST['recommender_submit_date-to'] != '') {
@@ -77,6 +87,7 @@ foreach($all_references as $applicant_reference) {
 	
 	//Build output data
 	$output_data = Array();
+	$output_data[] = $applicant_reference['reference_online'];
 	$output_data[] = ($applicant_reference['recommendation_submission_date'] != "0000-00-00") ? $applicant_reference['recommendation_submission_date'] : "";
 	$output_data[] = $applicant_reference['applicant_id'];
 	$output_data[] = $applicant_reference['applicant_name'];
@@ -84,22 +95,36 @@ foreach($all_references as $applicant_reference) {
 	$email = $applicant_reference['reference_email'];
 	$output_data[] = $email;
 
+
 	// Web Mode
 ?>
 	<tr class='<?php echo $color;?>' id='reference_data'>
 		<?php 
 			$ct = 0;
 			foreach($output_data as $item) {
-				if($ct == 0) {
+				if($ct == 1) {
 					echo "<td>
 							<a href='getFile.php?FileName=" . $applicant_reference['reference_filename'] . "&FileType=LOR' target='_blank'>$item</a>
 						</td>";
-					;
-				} else if($ct == 4) {
+				} else if($ct == 5) {
 					echo "<td>
 							<a href='mailto:$item'>$item</a>
 						</td>";
-				} else {
+				} else if($ct == 0) {
+					echo "<td>";
+						if($item == 0){
+							echo "Not Online";
+						}
+						else if($item == 1){
+							echo "Online";
+						}
+						else {
+							echo "";
+						}
+					echo "</td>";
+				}
+
+				else {
 					echo "<td>$item</td>";
 				}
 				$ct++;

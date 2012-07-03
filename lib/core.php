@@ -356,11 +356,12 @@ foreach($fields as $field) { ?>
 					}
 				
 				} else {
-					foreach($field[3] as $data) { ?>
-						<option value='<?php echo $data;?>'>
-							<?php echo $data;?>
-						</option>
-					<?php 
+					foreach($field[3] as $data) {
+						//Modified by Ben to allow for custom selection options.  See Recommenders for Exmaple
+						$selected = explode('*-*', $data);
+						echo '<option value="' . $selected[0] . '" ' . $selected[1] . ' >';
+						echo $selected[0];
+						echo "</option>";
 					}
 				}
 			?>			
