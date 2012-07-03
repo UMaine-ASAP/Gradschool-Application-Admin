@@ -3,6 +3,9 @@ include_once '../lib/variables.php';
 include_once '../lib/database.php';
 include_once '../lib/core.php';
 
+//make sure user is valid
+if(check_ses_vars() != '') {
+
 $db = Database::get();
 
 function true_false($var){
@@ -47,5 +50,6 @@ case("delete"):
 	$query = "DELETE FROM um_academic WHERE academic_index = %s";
 	$db->iquery($query, $id);
 	break;
+}
 }
 ?>
