@@ -96,7 +96,6 @@ $(document).ready( function() {
 				var dataString = 'academic_index=' + academic_index + '&mode=delete';
 
 
-
 				var deleting = confirm("Are you sure you want to delete this program?");
 				if(deleting == true){
 					$.ajax({
@@ -110,7 +109,6 @@ $(document).ready( function() {
 						}
 					})
 				}
-
 			},
 			Cancel: function(){
 				$(this).dialog("close");
