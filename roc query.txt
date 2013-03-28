@@ -1,9 +1,0 @@
-$references1 = db->query("SELECT applicant_id, given_name, middle_name, family_name, reference1_first, reference1_last, reference1_email FROM applicants");
-$references2 = db->query("SELECT applicant_id, given_name, middle_name, family_name, reference2_first, reference2_last, reference2_email FROM applicants");
-$references3 = db->query("SELECT applicant_id, given_name, middle_name, family_name, reference3_first, reference3_last, reference3_email FROM applicants");
-
-$all_references = ($references1, $references2, $references3);
-
-foreach($all_references as $reference) {
-
-}
